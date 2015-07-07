@@ -7,12 +7,9 @@
 //
 
 #import "AppDelegate.h"
-#import "HTTPServer.h"
-#import "PBMHTTPConnection.h"
-#import "PBMIPTool.h"
+#import "PBMTool.h"
 
 @interface AppDelegate ()
-@property (nonatomic, strong) HTTPServer *httpServer;
 @end
 
 @implementation AppDelegate
@@ -20,19 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    _httpServer = [[HTTPServer alloc] init];
-    [_httpServer setConnectionClass:[PBMHTTPConnection class]];
-    [_httpServer setType:@"_http._tcp."];
-    [_httpServer setPort:12345];
-    [_httpServer setDocumentRoot:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Web"]];
-    
-    NSError *error;
-    if([_httpServer start:&error]) {
-        NSLog(@"You can see you SQLite in %@:%hu", [PBMIPTool IPAddress], [_httpServer listeningPort]);
-    } else {
-        NSLog(@"Error starting HTTP Server: %@", error);
-    }
+    [PBMTool start];
     
     return YES;
 }

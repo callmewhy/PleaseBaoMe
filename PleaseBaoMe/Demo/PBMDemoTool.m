@@ -8,7 +8,7 @@
 
 #import "PBMDemoTool.h"
 #import "FMDB.h"
-#import "PBMHTTPConnection.h"
+#import "PBMTool.h"
 
 @implementation PBMDemoTool
 
@@ -16,7 +16,7 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *writableDBPath = [documentsDirectory stringByAppendingPathComponent:@"demo.db"];
-    [PBMHTTPConnection setDBFilePath:writableDBPath];
+    [PBMTool setDBFilePath:writableDBPath];
     
     FMDatabase* db = [FMDatabase databaseWithPath:writableDBPath];
     if (![db open]) {

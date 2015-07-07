@@ -19,6 +19,7 @@
 		9651DDE01B4BFF6500807A1F /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 9651DDDF1B4BFF6500807A1F /* Web */; };
 		9651DDE31B4C193500807A1F /* PBMHTMLBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE21B4C193500807A1F /* PBMHTMLBuilder.m */; };
 		9651DDE61B4C1C5000807A1F /* PBMIPTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE51B4C1C5000807A1F /* PBMIPTool.m */; };
+		9651DDE91B4C3F9600807A1F /* PBMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE81B4C3F9600807A1F /* PBMTool.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,8 @@
 		9651DDE21B4C193500807A1F /* PBMHTMLBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMHTMLBuilder.m; sourceTree = "<group>"; };
 		9651DDE41B4C1C5000807A1F /* PBMIPTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMIPTool.h; sourceTree = "<group>"; };
 		9651DDE51B4C1C5000807A1F /* PBMIPTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMIPTool.m; sourceTree = "<group>"; };
+		9651DDE71B4C3F9600807A1F /* PBMTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMTool.h; sourceTree = "<group>"; };
+		9651DDE81B4C3F9600807A1F /* PBMTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMTool.m; sourceTree = "<group>"; };
 		9699C23513B2C39B5A552229 /* Pods-PleaseBaoMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PleaseBaoMe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PleaseBaoMe/Pods-PleaseBaoMe.debug.xcconfig"; sourceTree = "<group>"; };
 		A06324C093FC5FEA5C7A33D0 /* libPods-PleaseBaoMe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PleaseBaoMe.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -121,6 +124,8 @@
 				9651DDE21B4C193500807A1F /* PBMHTMLBuilder.m */,
 				9651DDE41B4C1C5000807A1F /* PBMIPTool.h */,
 				9651DDE51B4C1C5000807A1F /* PBMIPTool.m */,
+				9651DDE71B4C3F9600807A1F /* PBMTool.h */,
+				9651DDE81B4C3F9600807A1F /* PBMTool.m */,
 			);
 			path = Class;
 			sourceTree = "<group>";
@@ -249,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9601E9F41B4BBE8D003F6834 /* ViewController.m in Sources */,
+				9651DDE91B4C3F9600807A1F /* PBMTool.m in Sources */,
 				9601EA151B4BC1AB003F6834 /* PBMHTTPConnection.m in Sources */,
 				9601EA191B4BC27D003F6834 /* PBMDemoTool.m in Sources */,
 				9601E9F11B4BBE8D003F6834 /* AppDelegate.m in Sources */,
