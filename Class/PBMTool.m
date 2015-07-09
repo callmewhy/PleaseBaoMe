@@ -17,6 +17,9 @@
 @implementation PBMTool
 
 -(void)start {
+    if (_httpServer) {
+        return;
+    }
     _httpServer = [[HTTPServer alloc] init];
     [_httpServer setConnectionClass:[PBMHTTPConnection class]];
     [_httpServer setType:@"_http._tcp."];
