@@ -16,10 +16,10 @@
 		9601E9FC1B4BBE8D003F6834 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9601E9FA1B4BBE8D003F6834 /* LaunchScreen.xib */; };
 		9601EA151B4BC1AB003F6834 /* PBMHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 9601EA141B4BC1AB003F6834 /* PBMHTTPConnection.m */; };
 		9601EA191B4BC27D003F6834 /* PBMDemoTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9601EA181B4BC27D003F6834 /* PBMDemoTool.m */; };
-		9651DDE01B4BFF6500807A1F /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 9651DDDF1B4BFF6500807A1F /* Web */; };
 		9651DDE31B4C193500807A1F /* PBMHTMLBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE21B4C193500807A1F /* PBMHTMLBuilder.m */; };
 		9651DDE61B4C1C5000807A1F /* PBMIPTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE51B4C1C5000807A1F /* PBMIPTool.m */; };
 		9651DDE91B4C3F9600807A1F /* PBMTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9651DDE81B4C3F9600807A1F /* PBMTool.m */; };
+		967AD8951B4EB2F100726711 /* Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 967AD8941B4EB2F100726711 /* Web.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,13 +38,13 @@
 		9601EA141B4BC1AB003F6834 /* PBMHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMHTTPConnection.m; sourceTree = "<group>"; };
 		9601EA171B4BC27D003F6834 /* PBMDemoTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMDemoTool.h; sourceTree = "<group>"; };
 		9601EA181B4BC27D003F6834 /* PBMDemoTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMDemoTool.m; sourceTree = "<group>"; };
-		9651DDDF1B4BFF6500807A1F /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		9651DDE11B4C193500807A1F /* PBMHTMLBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMHTMLBuilder.h; sourceTree = "<group>"; };
 		9651DDE21B4C193500807A1F /* PBMHTMLBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMHTMLBuilder.m; sourceTree = "<group>"; };
 		9651DDE41B4C1C5000807A1F /* PBMIPTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMIPTool.h; sourceTree = "<group>"; };
 		9651DDE51B4C1C5000807A1F /* PBMIPTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMIPTool.m; sourceTree = "<group>"; };
 		9651DDE71B4C3F9600807A1F /* PBMTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBMTool.h; sourceTree = "<group>"; };
 		9651DDE81B4C3F9600807A1F /* PBMTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBMTool.m; sourceTree = "<group>"; };
+		967AD8941B4EB2F100726711 /* Web.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Web.bundle; sourceTree = "<group>"; };
 		9699C23513B2C39B5A552229 /* Pods-PleaseBaoMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PleaseBaoMe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PleaseBaoMe/Pods-PleaseBaoMe.debug.xcconfig"; sourceTree = "<group>"; };
 		A06324C093FC5FEA5C7A33D0 /* libPods-PleaseBaoMe.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PleaseBaoMe.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -117,7 +117,7 @@
 		9601EA121B4BC144003F6834 /* Class */ = {
 			isa = PBXGroup;
 			children = (
-				9651DDDF1B4BFF6500807A1F /* Web */,
+				967AD8941B4EB2F100726711 /* Web.bundle */,
 				9601EA131B4BC1AB003F6834 /* PBMHTTPConnection.h */,
 				9601EA141B4BC1AB003F6834 /* PBMHTTPConnection.m */,
 				9651DDE11B4C193500807A1F /* PBMHTMLBuilder.h */,
@@ -206,8 +206,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				967AD8951B4EB2F100726711 /* Web.bundle in Resources */,
 				9601E9F71B4BBE8D003F6834 /* Main.storyboard in Resources */,
-				9651DDE01B4BFF6500807A1F /* Web in Resources */,
 				9601E9FC1B4BBE8D003F6834 /* LaunchScreen.xib in Resources */,
 				9601E9F91B4BBE8D003F6834 /* Images.xcassets in Resources */,
 			);

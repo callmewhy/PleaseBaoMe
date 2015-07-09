@@ -19,6 +19,9 @@
 }
 
 +(NSString *)getTableContentWithHeaders:(NSArray *)headers andContent:(NSDictionary *)dictionary {
+    if (dictionary.allValues.count < 1) {
+        return @"";
+    }
     NSArray *fisrtArray = dictionary.allValues[0];
     NSInteger lines = fisrtArray.count;
     NSMutableString *pageSource = [NSMutableString string];

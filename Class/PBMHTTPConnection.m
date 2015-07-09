@@ -76,7 +76,7 @@ static NSString *kDBPath;
     while ([s next]) {
         for (int i = 0; i < s.columnCount; i++) {
             NSString *colName = [s columnNameForIndex:i];
-            NSString *value     = [s stringForColumnIndex:i];
+            NSString *value     = [NSString stringWithFormat:@"%@", [s objectForColumnIndex:i]];
             NSMutableArray *array = [NSMutableArray arrayWithArray:resultDic[colName]];
             [array addObject:value];
             resultDic[colName] = array;
