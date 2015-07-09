@@ -21,7 +21,7 @@
     [_httpServer setConnectionClass:[PBMHTTPConnection class]];
     [_httpServer setType:@"_http._tcp."];
     [_httpServer setPort:12345];
-    NSString *webPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Web"];
+    NSString *webPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Web.bundle"];
     [_httpServer setDocumentRoot:webPath];
     
     NSError *error;

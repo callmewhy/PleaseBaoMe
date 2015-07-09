@@ -1,47 +1,70 @@
 <html>
-<head>
-    <title>PleaseBaoMe</title>
-    <link href="bower_components/foundation/css/foundation.min.css" rel="stylesheet">
-    <link href="bower_components/jquery/dist/jquery.min.js" rel="stylesheet">
-    <link href="bower_components/foundation/js/foundation.min.js" rel="stylesheet">
+    <head>
+        <title>PleaseBaoMe</title>
+        <meta charset="UTF-8"/>
+        <link href="bower_components/foundation/css/foundation.min.css" rel="stylesheet" />
+        <link href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/foundation/js/foundation.min.js"></script>
+        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+        
+        <style>
+            nav.top-bar {
+                text-align:center;
+            }
+            section.top-bar-section {
+                display: inline-block;
+            }
+            table {
+                min-width: 30%;
+                max-width: 100%;
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            table, td, th {
+                overflow:hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
 
-    <style>
-        nav.top-bar {
-            text-align:center;
-        }
-        section.top-bar-section {
-            display: inline-block;
-        }
-        table {
-            min-width: 30%;
-            max-width: 90%;
-            margin-top: 20px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
-</head>
+            td {
+                word-break:break-word;
+                word-wrap:break-all;
+            }
+        </style>
 
-<body>
-
-<nav class="top-bar" data-topbar role="navigation">
-    <section class="top-bar-section">
-        <ul>
-            <li class="has-dropdown not-click">
-                <a href="#">%%TABLE_NAME%%</a>
-                <ul class="dropdown">
-                    %%TABLE_NAME_LIST%%
+        <script type="text/javascript">
+            $(function(){
+                $('table th').resizable({
+                    handles: 'e',
+                    minWidth: 18
+                });            
+            });
+        </script>
+    </head>
+    
+    <body>
+        
+        <nav class="top-bar" data-topbar role="navigation">
+            <section class="top-bar-section">
+                <ul>
+                    <li class="has-dropdown not-click">
+                        <a href="#">%%TABLE_NAME%%</a>
+                        <ul class="dropdown">
+                            %%TABLE_NAME_LIST%%
+                        </ul>
+                    </li>
                 </ul>
-            </li>
-        </ul>
-    </section>
-</nav>
-
-
-<table>
-    %%PLEASE_BAO_ME%%
-</table>
-
-
-</body>
+            </section>
+        </nav>
+        
+        
+        <div class="full-width">
+            <table>
+                %%PLEASE_BAO_ME%%
+            </table>
+        </div>
+        
+    </body>
 </html>
