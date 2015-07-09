@@ -17,8 +17,10 @@ static NSString *kDBPath;
 @implementation PBMHTTPConnection
 #pragma mark - HTTPConnection Override
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path {
-    // handle normal request
-    if ([[path lastPathComponent] componentsSeparatedByString:@"."].count > 1) {
+    NSString *sqlStr = [[path lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+    // handle normal request without spaces
+    if ([sqlStr componentsSeparatedByString:@" "].count == 1) {
         return [super httpResponseForMethod:method URI:path];
     }
     
@@ -28,19 +30,23 @@ static NSString *kDBPath;
         return nil;
     }
     
-    // table name
+    // table name list
     NSArray *tableNames = [self htmlForTableNameListWithDB:db];
     NSString *tableListHTML = [PBMHTMLBuilder getTableListWithTables:tableNames];
-    NSString *tableName = [path lastPathComponent];
-    if (tableName.length <= 1) {
-        tableName = tableNames[0];
+    
+    // current table name
+    NSString *tableName = @"Select Table";
+    NSArray *sqlWords = [sqlStr componentsSeparatedByString:@" "];
+    for (int i = 0; i < sqlWords.count; i++) {
+        NSString *word = sqlWords[i];
+        if ([word.lowercaseString isEqualToString:@"from"]) {
+            tableName = sqlWords[++i];
+            break;
+        }
     }
     
     // table content
-    NSString *tableContentHTML = [self getTableContentWithDB:db andTableName:tableName];
-    
-    
-    
+    NSString *tableContentHTML = [self getTableContentWithDB:db andSQL:sqlStr];
     
     // close database
     [db close];
@@ -48,7 +54,8 @@ static NSString *kDBPath;
     return [[HTTPDynamicFileResponse alloc] initWithFilePath:[self filePathForURI:@"/index.html"]
                                                forConnection:self
                                                    separator:@"%%"
-                                       replacementDictionary:@{ @"TABLE_NAME": tableName,
+                                       replacementDictionary:@{ @"SQL_QUERY": sqlStr,
+                                                                @"TABLE_NAME": tableName,
                                                                 @"TABLE_NAME_LIST": tableListHTML,
                                                                 @"PLEASE_BAO_ME": tableContentHTML
                                                                 }];
@@ -68,9 +75,8 @@ static NSString *kDBPath;
 }
 
 
--(NSString*)getTableContentWithDB:(FMDatabase*)db andTableName:(NSString*)tableName {
-    NSString *q = [NSString stringWithFormat:@"SELECT * FROM %@", tableName];
-    FMResultSet *s = [db executeQuery:q];
+-(NSString*)getTableContentWithDB:(FMDatabase*)db andSQL:(NSString*)sql {
+    FMResultSet *s = [db executeQuery:sql];
     NSMutableDictionary *resultDic = [NSMutableDictionary dictionary];
     NSMutableOrderedSet *cols = [NSMutableOrderedSet orderedSet];
     while ([s next]) {

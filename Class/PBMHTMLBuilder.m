@@ -13,7 +13,7 @@
 +(NSString*)getTableListWithTables:(NSArray*)tables {
     NSMutableString *result = [NSMutableString string];
     for (NSString *tableName in tables) {
-        [result appendFormat:@"<li><a href='/%@'>%@</a></li>", tableName, tableName];
+        [result appendFormat:@"<li><a href='/SELECT * FROM %@'>%@</a></li>", tableName, tableName];
     }
     return result;
 }

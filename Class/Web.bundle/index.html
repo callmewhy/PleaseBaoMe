@@ -1,70 +1,103 @@
 <html>
-    <head>
-        <title>PleaseBaoMe</title>
-        <meta charset="UTF-8"/>
-        <link href="bower_components/foundation/css/foundation.min.css" rel="stylesheet" />
-        <link href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-        <script src="bower_components/foundation/js/foundation.min.js"></script>
-        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
-        
-        <style>
-            nav.top-bar {
-                text-align:center;
-            }
-            section.top-bar-section {
-                display: inline-block;
-            }
-            table {
-                min-width: 30%;
-                max-width: 100%;
-                margin-top: 20px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            table, td, th {
-                overflow:hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
+<head>
+    <title>PleaseBaoMe</title>
+    <meta charset="UTF-8"/>
+    <link href="bower_components/foundation/css/foundation.min.css" rel="stylesheet" />
+    <link href="bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/foundation/js/foundation.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 
-            td {
-                word-break:break-word;
-                word-wrap:break-all;
-            }
-        </style>
+    <style>
+        nav.top-bar {
+            text-align: center;
+        }
+        section.top-bar-section {
+            display: inline-block;
+        }
+        table {
+            min-width: 30%;
+            max-width: 100%;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        table, td, th {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
 
-        <script type="text/javascript">
-            $(function(){
-                $('table th').resizable({
-                    handles: 'e',
-                    minWidth: 18
-                });            
+        td {
+            word-break: break-word;
+            word-wrap: break-all;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function(){
+            $('table th').resizable({
+                handles: 'e',
+                minWidth: 18
             });
-        </script>
-    </head>
-    
-    <body>
-        
-        <nav class="top-bar" data-topbar role="navigation">
-            <section class="top-bar-section">
-                <ul>
-                    <li class="has-dropdown not-click">
-                        <a href="#">%%TABLE_NAME%%</a>
-                        <ul class="dropdown">
-                            %%TABLE_NAME_LIST%%
-                        </ul>
-                    </li>
+
+            $('#go').click(function () {
+                var tableName = $("#table_name").text();
+                var limit = $("#limit").val();
+                var offset = $("#offset").val();
+                var sql = "SELECT * FROM " + tableName;
+                if (limit.length > 0) {
+                    sql += " LIMIT " + limit;
+                }
+
+                if (offset.length > 0) {
+                    sql += " OFFSET " + offset;
+                }
+
+                window.location.href = "/" + sql;
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+<nav class="top-bar" data-topbar role="navigation">
+    <section class="top-bar-section">
+        <ul>
+            <li class="has-dropdown not-click">
+                <a id="table_name" href="#">%%TABLE_NAME%%</a>
+                <ul class="dropdown">
+                    %%TABLE_NAME_LIST%%
                 </ul>
-            </section>
-        </nav>
-        
-        
-        <div class="full-width">
-            <table>
-                %%PLEASE_BAO_ME%%
-            </table>
-        </div>
-        
-    </body>
+            </li>
+            <li class="has-form">
+                <div class="row collapse">
+                    <div class="small-4 columns">
+                        <input type="text" id="offset" placeholder="OFFSET">
+                    </div>
+                    <div class="small-4 columns">
+                        <input type="text" id="limit" placeholder="LIMIT">
+                    </div>
+                    <div class="small-3 columns">
+                        <a href="#" id="go" class="alert button expand">GO</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </section>
+</nav>
+
+<h4 class="large-text-center" style="margin-top: 20px;">
+    %%SQL_QUERY%%
+</h4>
+
+<div class="full-width">
+    <table>
+        %%PLEASE_BAO_ME%%
+    </table>
+</div>
+
+
+</body>
 </html>
