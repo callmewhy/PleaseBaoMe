@@ -46,14 +46,9 @@
                 var limit = $("#limit").val();
                 var offset = $("#offset").val();
                 var sql = "SELECT * FROM " + tableName;
-                if (limit.length > 0) {
-                    sql += " LIMIT " + limit;
+                if (offset.length > 0 && limit.length > 0) {
+                    sql += " LIMIT " + limit + " OFFSET " + offset;
                 }
-
-                if (offset.length > 0) {
-                    sql += " OFFSET " + offset;
-                }
-
                 window.location.href = "/" + sql;
             });
         });
