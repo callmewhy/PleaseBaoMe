@@ -1,6 +1,6 @@
-#import "HTTPAsyncFileResponse.h"
-#import "HTTPConnection.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPAsyncFileResponse.h"
+#import "CHSHTTPConnection.h"
+#import "CHSHTTPLogging.h"
 
 #import <unistd.h>
 #import <fcntl.h>
@@ -40,7 +40,7 @@
 /**
  * Architecure overview:
  * 
- * HTTPConnection will invoke our readDataOfLength: method to fetch data.
+ * CHSHTTPConnection will invoke our readDataOfLength: method to fetch data.
  * We will return nil, and then proceed to read the data via our readSource on our readQueue.
  * Once the requested amount of data has been read, we then pause our readSource,
  * and inform the connection of the available data.
@@ -54,9 +54,9 @@
  * we don't open the file until we have to (until the connection starts requesting data).
 **/
 
-@implementation HTTPAsyncFileResponse
+@implementation CHSHTTPAsyncFileResponse
 
-- (id)initWithFilePath:(NSString *)fpath forConnection:(HTTPConnection *)parent
+- (id)initWithFilePath:(NSString *)fpath forConnection:(CHSHTTPConnection *)parent
 {
 	if ((self = [super init]))
 	{
@@ -103,7 +103,7 @@
 - (void)processReadBuffer
 {
 	// This method is here to allow superclasses to perform post-processing of the data.
-	// For an example, see the HTTPDynamicFileResponse class.
+	// For an example, see the CHSHTTPDynamicFileResponse class.
 	// 
 	// At this point, the readBuffer has readBufferOffset bytes available.
 	// This method is in charge of updating the readBufferOffset.
@@ -171,7 +171,7 @@
 	
 	HTTPLogVerbose(@"%@[%p]: Open fd[%i] -> %@", THIS_FILE, self, fileFD, filePath);
 	
-	readQueue = dispatch_queue_create("HTTPAsyncFileResponse", NULL);
+	readQueue = dispatch_queue_create("CHSHTTPAsyncFileResponse", NULL);
 	readSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, fileFD, 0, readQueue);
 	
 	
@@ -361,7 +361,7 @@
 		
 		dispatch_sync(readQueue, ^{
 			
-			NSAssert(readSourceSuspended, @"Invalid logic - perhaps HTTPConnection has changed.");
+			NSAssert(readSourceSuspended, @"Invalid logic - perhaps CHSHTTPConnection has changed.");
 			
 			readRequestLength = length;
 			[self resumeReadSource];

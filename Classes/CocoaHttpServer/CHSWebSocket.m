@@ -1,9 +1,9 @@
-#import "WebSocket.h"
-#import "HTTPMessage.h"
+#import "CHSWebSocket.h"
+#import "CHSHTTPMessage.h"
 #import "GCDAsyncSocket.h"
 #import "DDNumber.h"
 #import "DDData.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPLogging.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -67,7 +67,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	return frame & 0x7F;
 }
 
-@interface WebSocket (PrivateAPI)
+@interface CHSWebSocket (PrivateAPI)
 
 - (void)readRequestBody;
 - (void)sendResponseBody;
@@ -79,7 +79,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation WebSocket
+@implementation CHSWebSocket
 {
 	BOOL isRFC6455;
 	BOOL nextFrameMasked;
@@ -87,28 +87,28 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	NSData *maskingKey;
 }
 
-+ (BOOL)isWebSocketRequest:(HTTPMessage *)request
++ (BOOL)isWebSocketRequest:(CHSHTTPMessage *)request
 {
 	// Request (Draft 75):
 	// 
 	// GET /demo HTTP/1.1
-	// Upgrade: WebSocket
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
 	// Host: example.com
 	// Origin: http://example.com
-	// WebSocket-Protocol: sample
+	// CHSWebSocket-Protocol: sample
 	// 
 	// 
 	// Request (Draft 76):
 	//
 	// GET /demo HTTP/1.1
-	// Upgrade: WebSocket
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
 	// Host: example.com
 	// Origin: http://example.com
-	// Sec-WebSocket-Protocol: sample
-	// Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5
-	// Sec-WebSocket-Key2: 12998 5 Y3 1  .P00
+	// Sec-CHSWebSocket-Protocol: sample
+	// Sec-CHSWebSocket-Key1: 4 @1  46546xW%0l 1 5
+	// Sec-CHSWebSocket-Key2: 12998 5 Y3 1  .P00
 	// 
 	// ^n:ds[4U
 	
@@ -124,7 +124,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	if (!upgradeHeaderValue || !connectionHeaderValue) {
 		isWebSocket = NO;
 	}
-	else if (![upgradeHeaderValue caseInsensitiveCompare:@"WebSocket"] == NSOrderedSame) {
+	else if (![upgradeHeaderValue caseInsensitiveCompare:@"CHSWebSocket"] == NSOrderedSame) {
 		isWebSocket = NO;
 	}
 	else if ([connectionHeaderValue rangeOfString:@"Upgrade" options:NSCaseInsensitiveSearch].location == NSNotFound) {
@@ -136,10 +136,10 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	return isWebSocket;
 }
 
-+ (BOOL)isVersion76Request:(HTTPMessage *)request
++ (BOOL)isVersion76Request:(CHSHTTPMessage *)request
 {
-	NSString *key1 = [request headerField:@"Sec-WebSocket-Key1"];
-	NSString *key2 = [request headerField:@"Sec-WebSocket-Key2"];
+	NSString *key1 = [request headerField:@"Sec-CHSWebSocket-Key1"];
+	NSString *key2 = [request headerField:@"Sec-CHSWebSocket-Key2"];
 	
 	BOOL isVersion76;
 	
@@ -155,9 +155,9 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	return isVersion76;
 }
 
-+ (BOOL)isRFC6455Request:(HTTPMessage *)request
++ (BOOL)isRFC6455Request:(CHSHTTPMessage *)request
 {
-	NSString *key = [request headerField:@"Sec-WebSocket-Key"];
+	NSString *key = [request headerField:@"Sec-CHSWebSocket-Key"];
 	BOOL isRFC6455 = (key != nil);
 
 	HTTPLogTrace2(@"%@: %@ - %@", THIS_FILE, THIS_METHOD, (isRFC6455 ? @"YES" : @"NO"));
@@ -171,7 +171,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 
 @synthesize websocketQueue;
 
-- (id)initWithRequest:(HTTPMessage *)aRequest socket:(GCDAsyncSocket *)socket
+- (id)initWithRequest:(CHSHTTPMessage *)aRequest socket:(GCDAsyncSocket *)socket
 {
 	HTTPLogTrace();
 	
@@ -182,7 +182,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	
 	if ((self = [super init]))
 	{	
-		websocketQueue = dispatch_queue_create("WebSocket", NULL);
+		websocketQueue = dispatch_queue_create("CHSWebSocket", NULL);
 		request = aRequest;
 		
 		asyncSocket = socket;
@@ -232,8 +232,8 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Starting point for the WebSocket after it has been fully initialized (including subclasses).
- * This method is called by the HTTPConnection it is spawned from.
+ * Starting point for the CHSWebSocket after it has been fully initialized (including subclasses).
+ * This method is called by the CHSHTTPConnection it is spawned from.
 **/
 - (void)start
 {
@@ -258,8 +258,8 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 }
 
 /**
- * This method is called by the HTTPServer if it is asked to stop.
- * The server, in turn, invokes stop on each WebSocket instance.
+ * This method is called by the CHSHTTPServer if it is asked to stop.
+ * The server, in turn, invokes stop on each CHSWebSocket instance.
 **/
 - (void)stop
 {
@@ -280,7 +280,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 {
 	HTTPLogTrace();
 	
-	NSAssert(isVersion76, @"WebSocket version 75 doesn't contain a request body");
+	NSAssert(isVersion76, @"CHSWebSocket version 75 doesn't contain a request body");
 	
 	[asyncSocket readDataToLength:8 withTimeout:TIMEOUT_NONE tag:TAG_HTTP_REQUEST_BODY];
 }
@@ -329,7 +329,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 }
 
 - (NSString *)secWebSocketKeyResponseHeaderValue {
-	NSString *key = [request headerField: @"Sec-WebSocket-Key"];
+	NSString *key = [request headerField: @"Sec-CHSWebSocket-Key"];
 	NSString *guid = @"258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 	return [[key stringByAppendingString: guid] dataUsingEncoding: NSUTF8StringEncoding].sha1Digest.base64Encoded;
 }
@@ -341,23 +341,23 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	// Request (Draft 75):
 	// 
 	// GET /demo HTTP/1.1
-	// Upgrade: WebSocket
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
 	// Host: example.com
 	// Origin: http://example.com
-	// WebSocket-Protocol: sample
+	// CHSWebSocket-Protocol: sample
 	// 
 	// 
 	// Request (Draft 76):
 	//
 	// GET /demo HTTP/1.1
-	// Upgrade: WebSocket
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
 	// Host: example.com
 	// Origin: http://example.com
-	// Sec-WebSocket-Protocol: sample
-	// Sec-WebSocket-Key2: 12998 5 Y3 1  .P00
-	// Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5
+	// Sec-CHSWebSocket-Protocol: sample
+	// Sec-CHSWebSocket-Key2: 12998 5 Y3 1  .P00
+	// Sec-CHSWebSocket-Key1: 4 @1  46546xW%0l 1 5
 	// 
 	// ^n:ds[4U
 
@@ -365,53 +365,53 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 	// Response (Draft 75):
 	// 
 	// HTTP/1.1 101 Web Socket Protocol Handshake
-	// Upgrade: WebSocket
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
-	// WebSocket-Origin: http://example.com
-	// WebSocket-Location: ws://example.com/demo
-	// WebSocket-Protocol: sample
+	// CHSWebSocket-Origin: http://example.com
+	// CHSWebSocket-Location: ws://example.com/demo
+	// CHSWebSocket-Protocol: sample
 	// 
 	// 
 	// Response (Draft 76):
 	//
-	// HTTP/1.1 101 WebSocket Protocol Handshake
-	// Upgrade: WebSocket
+	// HTTP/1.1 101 CHSWebSocket Protocol Handshake
+	// Upgrade: CHSWebSocket
 	// Connection: Upgrade
-	// Sec-WebSocket-Origin: http://example.com
-	// Sec-WebSocket-Location: ws://example.com/demo
-	// Sec-WebSocket-Protocol: sample
+	// Sec-CHSWebSocket-Origin: http://example.com
+	// Sec-CHSWebSocket-Location: ws://example.com/demo
+	// Sec-CHSWebSocket-Protocol: sample
 	// 
 	// 8jKS'y:G*Co,Wxa-
 
 	
-	HTTPMessage *wsResponse = [[HTTPMessage alloc] initResponseWithStatusCode:101
+	CHSHTTPMessage *wsResponse = [[CHSHTTPMessage alloc] initResponseWithStatusCode:101
 	                                                              description:@"Web Socket Protocol Handshake"
 	                                                                  version:HTTPVersion1_1];
 	
-	[wsResponse setHeaderField:@"Upgrade" value:@"WebSocket"];
+	[wsResponse setHeaderField:@"Upgrade" value:@"CHSWebSocket"];
 	[wsResponse setHeaderField:@"Connection" value:@"Upgrade"];
 	
-	// Note: It appears that WebSocket-Origin and WebSocket-Location
+	// Note: It appears that CHSWebSocket-Origin and CHSWebSocket-Location
 	// are required for Google's Chrome implementation to work properly.
 	// 
-	// If we don't send either header, Chrome will never report the WebSocket as open.
-	// If we only send one of the two, Chrome will immediately close the WebSocket.
+	// If we don't send either header, Chrome will never report the CHSWebSocket as open.
+	// If we only send one of the two, Chrome will immediately close the CHSWebSocket.
 	// 
 	// In addition to this it appears that Chrome's implementation is very picky of the values of the headers.
-	// They have to match exactly with what Chrome sent us or it will close the WebSocket.
+	// They have to match exactly with what Chrome sent us or it will close the CHSWebSocket.
 	
 	NSString *originValue = [self originResponseHeaderValue];
 	NSString *locationValue = [self locationResponseHeaderValue];
 	
-	NSString *originField = isVersion76 ? @"Sec-WebSocket-Origin" : @"WebSocket-Origin";
-	NSString *locationField = isVersion76 ? @"Sec-WebSocket-Location" : @"WebSocket-Location";
+	NSString *originField = isVersion76 ? @"Sec-CHSWebSocket-Origin" : @"CHSWebSocket-Origin";
+	NSString *locationField = isVersion76 ? @"Sec-CHSWebSocket-Location" : @"CHSWebSocket-Location";
 	
 	[wsResponse setHeaderField:originField value:originValue];
 	[wsResponse setHeaderField:locationField value:locationValue];
 	
 	NSString *acceptValue = [self secWebSocketKeyResponseHeaderValue];
 	if (acceptValue) {
-		[wsResponse setHeaderField: @"Sec-WebSocket-Accept" value: acceptValue];
+		[wsResponse setHeaderField: @"Sec-CHSWebSocket-Accept" value: acceptValue];
 	}
 
 	NSData *responseHeaders = [wsResponse messageData];
@@ -470,11 +470,11 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 {
 	HTTPLogTrace();
 	
-	NSAssert(isVersion76, @"WebSocket version 75 doesn't contain a response body");
+	NSAssert(isVersion76, @"CHSWebSocket version 75 doesn't contain a response body");
 	NSAssert([d3 length] == 8, @"Invalid requestBody length");
 	
-	NSString *key1 = [request headerField:@"Sec-WebSocket-Key1"];
-	NSString *key2 = [request headerField:@"Sec-WebSocket-Key2"];
+	NSString *key1 = [request headerField:@"Sec-CHSWebSocket-Key1"];
+	NSString *key2 = [request headerField:@"Sec-CHSWebSocket-Key2"];
 	
 	NSData *d1 = [self processKey:key1];
 	NSData *d2 = [self processKey:key2];
@@ -501,7 +501,7 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 {
 	HTTPLogTrace();
 	
-	// Override me to perform any custom actions once the WebSocket has been opened.
+	// Override me to perform any custom actions once the CHSWebSocket has been opened.
 	// This method is invoked on the websocketQueue.
 	// 
 	// Don't forget to invoke [super didOpen] in your method.
@@ -595,11 +595,11 @@ static inline NSUInteger WS_PAYLOAD_LENGTH(UInt8 frame)
 		[delegate webSocketDidClose:self];
 	}
 	
-	// Notify HTTPServer
+	// Notify CHSHTTPServer
 	[[NSNotificationCenter defaultCenter] postNotificationName:WebSocketDidDieNotification object:self];
 }
 
-#pragma mark WebSocket Frame
+#pragma mark CHSWebSocket Frame
 
 - (BOOL)isValidWebSocketFrame:(UInt8)frame
 {

@@ -1,16 +1,16 @@
 #import "GCDAsyncSocket.h"
-#import "HTTPServer.h"
-#import "HTTPConnection.h"
-#import "HTTPMessage.h"
-#import "HTTPResponse.h"
-#import "HTTPAuthenticationRequest.h"
+#import "CHSHTTPServer.h"
+#import "CHSHTTPConnection.h"
+#import "CHSHTTPMessage.h"
+#import "CHSHTTPResponse.h"
+#import "CHSHTTPAuthenticationRequest.h"
 #import "DDNumber.h"
 #import "DDRange.h"
 #import "DDData.h"
-#import "HTTPFileResponse.h"
-#import "HTTPAsyncFileResponse.h"
-#import "WebSocket.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPFileResponse.h"
+#import "CHSHTTPAsyncFileResponse.h"
+#import "CHSWebSocket.h"
+#import "CHSHTTPLogging.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -103,7 +103,7 @@
 // the HTTP_RESPONSE tag. For all other segments prior to the last segment use HTTP_PARTIAL_RESPONSE, or some other
 // tag of your own invention.
 
-@interface HTTPConnection (PrivateAPI)
+@interface CHSHTTPConnection (PrivateAPI)
 - (void)startReadingRequest;
 - (void)sendResponseHeadersAndBody;
 @end
@@ -112,7 +112,7 @@
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation HTTPConnection
+@implementation CHSHTTPConnection
 
 static dispatch_queue_t recentNonceQueue;
 static NSMutableArray *recentNonces;
@@ -127,7 +127,7 @@ static NSMutableArray *recentNonces;
 	dispatch_once(&onceToken, ^{
 		
 		// Initialize class variables
-		recentNonceQueue = dispatch_queue_create("HTTPConnection-Nonce", NULL);
+		recentNonceQueue = dispatch_queue_create("CHSHTTPConnection-Nonce", NULL);
 		recentNonces = [[NSMutableArray alloc] initWithCapacity:5];
 	});
 }
@@ -194,7 +194,7 @@ static NSMutableArray *recentNonces;
  * Associates this new HTTP connection with the given AsyncSocket.
  * This HTTP connection object will become the socket's delegate and take over responsibility for the socket.
 **/
-- (id)initWithAsyncSocket:(GCDAsyncSocket *)newSocket configuration:(HTTPConfig *)aConfig
+- (id)initWithAsyncSocket:(GCDAsyncSocket *)newSocket configuration:(CHSHTTPConfig *)aConfig
 {
 	if ((self = [super init]))
 	{
@@ -209,7 +209,7 @@ static NSMutableArray *recentNonces;
 		}
 		else
 		{
-			connectionQueue = dispatch_queue_create("HTTPConnection", NULL);
+			connectionQueue = dispatch_queue_create("CHSHTTPConnection", NULL);
 		}
 		
 		// Take over ownership of the socket
@@ -225,7 +225,7 @@ static NSMutableArray *recentNonces;
 		lastNC = 0;
 		
 		// Create a new HTTP message
-		request = [[HTTPMessage alloc] initEmptyRequest];
+		request = [[CHSHTTPMessage alloc] initEmptyRequest];
 		
 		numHeaderLines = 0;
 		
@@ -273,7 +273,7 @@ static NSMutableArray *recentNonces;
 	// - If accepting an upload, is the size of the data being uploaded too big?
 	//   To do this you can check the requestContentLength variable.
 	// 
-	// For more information, you can always access the HTTPMessage request variable.
+	// For more information, you can always access the CHSHTTPMessage request variable.
 	// 
 	// You should fall through with a call to [super supportsMethod:method atPath:path]
 	// 
@@ -424,7 +424,7 @@ static NSMutableArray *recentNonces;
 	HTTPLogTrace();
 	
 	// Extract the authentication information from the Authorization header
-	HTTPAuthenticationRequest *auth = [[HTTPAuthenticationRequest alloc] initWithRequest:request];
+	CHSHTTPAuthenticationRequest *auth = [[CHSHTTPAuthenticationRequest alloc] initWithRequest:request];
 	
 	if ([self useDigestAccessAuthentication])
 	{
@@ -554,7 +554,7 @@ static NSMutableArray *recentNonces;
 /**
  * Adds a digest access authentication challenge to the given response.
 **/
-- (void)addDigestAuthChallenge:(HTTPMessage *)response
+- (void)addDigestAuthChallenge:(CHSHTTPMessage *)response
 {
 	HTTPLogTrace();
 	
@@ -567,7 +567,7 @@ static NSMutableArray *recentNonces;
 /**
  * Adds a basic authentication challenge to the given response.
 **/
-- (void)addBasicAuthChallenge:(HTTPMessage *)response
+- (void)addBasicAuthChallenge:(CHSHTTPMessage *)response
 {
 	HTTPLogTrace();
 	
@@ -598,8 +598,8 @@ static NSMutableArray *recentNonces;
 }
 
 /**
- * This method is called by the HTTPServer if it is asked to stop.
- * The server, in turn, invokes stop on each HTTPConnection instance.
+ * This method is called by the CHSHTTPServer if it is asked to stop.
+ * The server, in turn, invokes stop on each CHSHTTPConnection instance.
 **/
 - (void)stop
 {
@@ -908,7 +908,7 @@ static NSMutableArray *recentNonces;
 
 /**
  * This method is called after a full HTTP request has been received.
- * The current request is in the HTTPMessage request variable.
+ * The current request is in the CHSHTTPMessage request variable.
 **/
 - (void)replyToHTTPRequest
 {
@@ -926,12 +926,12 @@ static NSMutableArray *recentNonces;
 	// Extract requested URI
 	NSString *uri = [self requestURI];
 	
-	// Check for WebSocket request
-	if ([WebSocket isWebSocketRequest:request])
+	// Check for CHSWebSocket request
+	if ([CHSWebSocket isWebSocketRequest:request])
 	{
 		HTTPLogVerbose(@"isWebSocket");
 		
-		WebSocket *ws = [self webSocketForURI:uri];
+		CHSWebSocket *ws = [self webSocketForURI:uri];
 		
 		if (ws == nil)
 		{
@@ -943,11 +943,11 @@ static NSMutableArray *recentNonces;
 			
 			[[config server] addWebSocket:ws];
 			
-			// The WebSocket should now be the delegate of the underlying socket.
+			// The CHSWebSocket should now be the delegate of the underlying socket.
 			// But gracefully handle the situation if it forgot.
 			if ([asyncSocket delegate] == self)
 			{
-				HTTPLogWarn(@"%@[%p]: WebSocket forgot to set itself as socket delegate", THIS_FILE, self);
+				HTTPLogWarn(@"%@[%p]: CHSWebSocket forgot to set itself as socket delegate", THIS_FILE, self);
 				
 				// Disconnect the socket.
 				// The socketDidDisconnect delegate method will handle everything else.
@@ -955,7 +955,7 @@ static NSMutableArray *recentNonces;
 			}
 			else
 			{
-				// The WebSocket is using the socket,
+				// The CHSWebSocket is using the socket,
 				// so make sure we don't disconnect it in the dealloc method.
 				asyncSocket = nil;
 				
@@ -1015,14 +1015,14 @@ static NSMutableArray *recentNonces;
 /**
  * Prepares a single-range response.
  * 
- * Note: The returned HTTPMessage is owned by the sender, who is responsible for releasing it.
+ * Note: The returned CHSHTTPMessage is owned by the sender, who is responsible for releasing it.
 **/
-- (HTTPMessage *)newUniRangeResponse:(UInt64)contentLength
+- (CHSHTTPMessage *)newUniRangeResponse:(UInt64)contentLength
 {
 	HTTPLogTrace();
 	
 	// Status Code 206 - Partial Content
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:206 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:206 description:nil version:HTTPVersion1_1];
 	
 	DDRange range = [[ranges objectAtIndex:0] ddrangeValue];
 	
@@ -1039,14 +1039,14 @@ static NSMutableArray *recentNonces;
 /**
  * Prepares a multi-range response.
  * 
- * Note: The returned HTTPMessage is owned by the sender, who is responsible for releasing it.
+ * Note: The returned CHSHTTPMessage is owned by the sender, who is responsible for releasing it.
 **/
-- (HTTPMessage *)newMultiRangeResponse:(UInt64)contentLength
+- (CHSHTTPMessage *)newMultiRangeResponse:(UInt64)contentLength
 {
 	HTTPLogTrace();
 	
 	// Status Code 206 - Partial Content
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:206 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:206 description:nil version:HTTPVersion1_1];
 	
 	// We have to send each range using multipart/byteranges
 	// So each byterange has to be prefix'd and suffix'd with the boundry
@@ -1149,7 +1149,7 @@ static NSMutableArray *recentNonces;
 		isChunked = [httpResponse isChunked];
 	}
 	
-	// If a response is "chunked", this simply means the HTTPResponse object
+	// If a response is "chunked", this simply means the CHSHTTPResponse object
 	// doesn't know the content-length in advance.
 	
 	UInt64 contentLength = 0;
@@ -1176,7 +1176,7 @@ static NSMutableArray *recentNonces;
 		}
 	}
 	
-	HTTPMessage *response;
+	CHSHTTPMessage *response;
 	
 	if (!isRangeRequest)
 	{
@@ -1188,7 +1188,7 @@ static NSMutableArray *recentNonces;
 		{
 			status = [httpResponse status];
 		}
-		response = [[HTTPMessage alloc] initResponseWithStatusCode:status description:nil version:HTTPVersion1_1];
+		response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:status description:nil version:HTTPVersion1_1];
 		
 		if (isChunked)
 		{
@@ -1324,7 +1324,7 @@ static NSMutableArray *recentNonces;
  * Returns the number of bytes of the http response body that are sitting in asyncSocket's write queue.
  * 
  * We keep track of this information in order to keep our memory footprint low while
- * working with asynchronous HTTPResponse objects.
+ * working with asynchronous CHSHTTPResponse objects.
 **/
 - (NSUInteger)writeQueueSize
 {
@@ -1350,17 +1350,17 @@ static NSMutableArray *recentNonces;
 	HTTPLogTrace();
 	
 	// This method is called when either asyncSocket has finished writing one of the response data chunks,
-	// or when an asynchronous HTTPResponse object informs us that it has more available data for us to send.
-	// In the case of the asynchronous HTTPResponse, we don't want to blindly grab the new data,
+	// or when an asynchronous CHSHTTPResponse object informs us that it has more available data for us to send.
+	// In the case of the asynchronous CHSHTTPResponse, we don't want to blindly grab the new data,
 	// and shove it onto asyncSocket's write queue.
 	// Doing so could negatively affect the memory footprint of the application.
 	// Instead, we always ensure that we place no more than READ_CHUNKSIZE bytes onto the write queue.
 	// 
-	// Note that this does not affect the rate at which the HTTPResponse object may generate data.
-	// The HTTPResponse is free to do as it pleases, and this is up to the application's developer.
-	// If the memory footprint is a concern, the developer creating the custom HTTPResponse object may freely
+	// Note that this does not affect the rate at which the CHSHTTPResponse object may generate data.
+	// The CHSHTTPResponse is free to do as it pleases, and this is up to the application's developer.
+	// If the memory footprint is a concern, the developer creating the custom CHSHTTPResponse object may freely
 	// use the calls to readDataOfLength as an indication to start generating more data.
-	// This provides an easy way for the HTTPResponse object to throttle its data allocation in step with the rate
+	// This provides an easy way for the CHSHTTPResponse object to throttle its data allocation in step with the rate
 	// at which the socket is able to send it.
 	
 	NSUInteger writeQueueSize = [self writeQueueSize];
@@ -1424,11 +1424,11 @@ static NSMutableArray *recentNonces;
 	// Doing so could negatively affect the memory footprint of the application.
 	// Instead, we always ensure that we place no more than READ_CHUNKSIZE bytes onto the write queue.
 	// 
-	// Note that this does not affect the rate at which the HTTPResponse object may generate data.
-	// The HTTPResponse is free to do as it pleases, and this is up to the application's developer.
-	// If the memory footprint is a concern, the developer creating the custom HTTPResponse object may freely
+	// Note that this does not affect the rate at which the CHSHTTPResponse object may generate data.
+	// The CHSHTTPResponse is free to do as it pleases, and this is up to the application's developer.
+	// If the memory footprint is a concern, the developer creating the custom CHSHTTPResponse object may freely
 	// use the calls to readDataOfLength as an indication to start generating more data.
-	// This provides an easy way for the HTTPResponse object to throttle its data allocation in step with the rate
+	// This provides an easy way for the CHSHTTPResponse object to throttle its data allocation in step with the rate
 	// at which the socket is able to send it.
 	
 	NSUInteger writeQueueSize = [self writeQueueSize];
@@ -1469,17 +1469,17 @@ static NSMutableArray *recentNonces;
 	HTTPLogTrace();
 	
 	// This method is called when either asyncSocket has finished writing one of the response data chunks,
-	// or when an asynchronous HTTPResponse object informs us that is has more available data for us to send.
-	// In the case of the asynchronous HTTPResponse, we don't want to blindly grab the new data,
+	// or when an asynchronous CHSHTTPResponse object informs us that is has more available data for us to send.
+	// In the case of the asynchronous CHSHTTPResponse, we don't want to blindly grab the new data,
 	// and shove it onto asyncSocket's write queue.
 	// Doing so could negatively affect the memory footprint of the application.
 	// Instead, we always ensure that we place no more than READ_CHUNKSIZE bytes onto the write queue.
 	// 
-	// Note that this does not affect the rate at which the HTTPResponse object may generate data.
-	// The HTTPResponse is free to do as it pleases, and this is up to the application's developer.
-	// If the memory footprint is a concern, the developer creating the custom HTTPResponse object may freely
+	// Note that this does not affect the rate at which the CHSHTTPResponse object may generate data.
+	// The CHSHTTPResponse is free to do as it pleases, and this is up to the application's developer.
+	// If the memory footprint is a concern, the developer creating the custom CHSHTTPResponse object may freely
 	// use the calls to readDataOfLength as an indication to start generating more data.
-	// This provides an easy way for the HTTPResponse object to throttle its data allocation in step with the rate
+	// This provides an easy way for the CHSHTTPResponse object to throttle its data allocation in step with the rate
 	// at which the socket is able to send it.
 	
 	NSUInteger writeQueueSize = [self writeQueueSize];
@@ -1668,12 +1668,12 @@ static NSMutableArray *recentNonces;
 
 /**
  * This method is called to get a response for a request.
- * You may return any object that adopts the HTTPResponse protocol.
- * The HTTPServer comes with two such classes: HTTPFileResponse and HTTPDataResponse.
- * HTTPFileResponse is a wrapper for an NSFileHandle object, and is the preferred way to send a file response.
- * HTTPDataResponse is a wrapper for an NSData object, and may be used to send a custom response.
+ * You may return any object that adopts the CHSHTTPResponse protocol.
+ * The CHSHTTPServer comes with two such classes: CHSHTTPFileResponse and CHSHTTPDataResponse.
+ * CHSHTTPFileResponse is a wrapper for an NSFileHandle object, and is the preferred way to send a file response.
+ * CHSHTTPDataResponse is a wrapper for an NSData object, and may be used to send a custom response.
 **/
-- (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
+- (NSObject<CHSHTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
 	HTTPLogTrace();
 	
@@ -1685,24 +1685,24 @@ static NSMutableArray *recentNonces;
 	
 	if (filePath && [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir] && !isDir)
 	{
-		return [[HTTPFileResponse alloc] initWithFilePath:filePath forConnection:self];
+		return [[CHSHTTPFileResponse alloc] initWithFilePath:filePath forConnection:self];
 	
 		// Use me instead for asynchronous file IO.
 		// Generally better for larger files.
 		
-	//	return [[[HTTPAsyncFileResponse alloc] initWithFilePath:filePath forConnection:self] autorelease];
+	//	return [[[CHSHTTPAsyncFileResponse alloc] initWithFilePath:filePath forConnection:self] autorelease];
 	}
 	
 	return nil;
 }
 
-- (WebSocket *)webSocketForURI:(NSString *)path
+- (CHSWebSocket *)webSocketForURI:(NSString *)path
 {
 	HTTPLogTrace();
 	
-	// Override me to provide custom WebSocket responses.
-	// To do so, simply override the base WebSocket implementation, and add your custom functionality.
-	// Then return an instance of your custom WebSocket here.
+	// Override me to provide custom CHSWebSocket responses.
+	// To do so, simply override the base CHSWebSocket implementation, and add your custom functionality.
+	// Then return an instance of your custom CHSWebSocket here.
 	// 
 	// For example:
 	// 
@@ -1769,7 +1769,7 @@ static NSMutableArray *recentNonces;
 	
 	HTTPLogWarn(@"HTTP Server: Error 505 - Version Not Supported: %@ (%@)", version, [self requestURI]);
 	
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:505 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:505 description:nil version:HTTPVersion1_1];
 	[response setHeaderField:@"Content-Length" value:@"0"];
     
 	NSData *responseData = [self preprocessErrorResponse:response];
@@ -1789,7 +1789,7 @@ static NSMutableArray *recentNonces;
 	HTTPLogInfo(@"HTTP Server: Error 401 - Unauthorized (%@)", [self requestURI]);
 		
 	// Status Code 401 - Unauthorized
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:401 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:401 description:nil version:HTTPVersion1_1];
 	[response setHeaderField:@"Content-Length" value:@"0"];
 	
 	if ([self useDigestAccessAuthentication])
@@ -1820,7 +1820,7 @@ static NSMutableArray *recentNonces;
 	HTTPLogWarn(@"HTTP Server: Error 400 - Bad Request (%@)", [self requestURI]);
 	
 	// Status Code 400 - Bad Request
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:400 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:400 description:nil version:HTTPVersion1_1];
 	[response setHeaderField:@"Content-Length" value:@"0"];
 	[response setHeaderField:@"Connection" value:@"close"];
 	
@@ -1848,7 +1848,7 @@ static NSMutableArray *recentNonces;
 	HTTPLogWarn(@"HTTP Server: Error 405 - Method Not Allowed: %@ (%@)", method, [self requestURI]);
 	
 	// Status code 405 - Method Not Allowed
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:405 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:405 description:nil version:HTTPVersion1_1];
 	[response setHeaderField:@"Content-Length" value:@"0"];
 	[response setHeaderField:@"Connection" value:@"close"];
 	
@@ -1873,7 +1873,7 @@ static NSMutableArray *recentNonces;
 	HTTPLogInfo(@"HTTP Server: Error 404 - Not Found (%@)", [self requestURI]);
 	
 	// Status Code 404 - Not Found
-	HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:404 description:nil version:HTTPVersion1_1];
+	CHSHTTPMessage *response = [[CHSHTTPMessage alloc] initResponseWithStatusCode:404 description:nil version:HTTPVersion1_1];
 	[response setHeaderField:@"Content-Length" value:@"0"];
 	
 	NSData *responseData = [self preprocessErrorResponse:response];
@@ -1927,7 +1927,7 @@ static NSMutableArray *recentNonces;
  * This method is called immediately prior to sending the response headers.
  * This method adds standard header fields, and then converts the response to an NSData object.
 **/
-- (NSData *)preprocessResponse:(HTTPMessage *)response
+- (NSData *)preprocessResponse:(CHSHTTPMessage *)response
 {
 	HTTPLogTrace();
 	
@@ -1964,7 +1964,7 @@ static NSMutableArray *recentNonces;
  * This method is called immediately prior to sending the response headers (for an error).
  * This method adds standard header fields, and then converts the response to an NSData object.
 **/
-- (NSData *)preprocessErrorResponse:(HTTPMessage *)response
+- (NSData *)preprocessErrorResponse:(CHSHTTPMessage *)response
 {
 	HTTPLogTrace();
 	
@@ -2450,7 +2450,7 @@ static NSMutableArray *recentNonces;
 				[self finishResponse];
 				
 				// The only time we should invoke [self die] is from socketDidDisconnect,
-				// or if the socket gets taken over by someone else like a WebSocket.
+				// or if the socket gets taken over by someone else like a CHSWebSocket.
 				
 				[asyncSocket disconnect];
 			}
@@ -2465,7 +2465,7 @@ static NSMutableArray *recentNonces;
 				// finishBody method and forgot to call [super finishBody].
 				NSAssert(request == nil, @"Request not properly released in finishBody");
 				
-				request = [[HTTPMessage alloc] initEmptyRequest];
+				request = [[CHSHTTPMessage alloc] initEmptyRequest];
 				
 				numHeaderLines = 0;
 				sentResponseHeaders = NO;
@@ -2490,23 +2490,23 @@ static NSMutableArray *recentNonces;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark HTTPResponse Notifications
+#pragma mark CHSHTTPResponse Notifications
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * This method may be called by asynchronous HTTPResponse objects.
- * That is, HTTPResponse objects that return YES in their "- (BOOL)isAsynchronous" method.
+ * This method may be called by asynchronous CHSHTTPResponse objects.
+ * That is, CHSHTTPResponse objects that return YES in their "- (BOOL)isAsynchronous" method.
  * 
  * This informs us that the response object has generated more data that we may be able to send.
 **/
-- (void)responseHasAvailableData:(NSObject<HTTPResponse> *)sender
+- (void)responseHasAvailableData:(NSObject<CHSHTTPResponse> *)sender
 {
 	HTTPLogTrace();
 	
 	// We always dispatch this asynchronously onto our connectionQueue,
 	// even if the connectionQueue is the current queue.
 	// 
-	// We do this to give the HTTPResponse classes the flexibility to call
+	// We do this to give the CHSHTTPResponse classes the flexibility to call
 	// this method whenever they want, even from within a readDataOfLength method.
 	
 	dispatch_async(connectionQueue, ^{ @autoreleasepool {
@@ -2542,14 +2542,14 @@ static NSMutableArray *recentNonces;
  * This method is called if the response encounters some critical error,
  * and it will be unable to fullfill the request.
 **/
-- (void)responseDidAbort:(NSObject<HTTPResponse> *)sender
+- (void)responseDidAbort:(NSObject<CHSHTTPResponse> *)sender
 {
 	HTTPLogTrace();
 	
 	// We always dispatch this asynchronously onto our connectionQueue,
 	// even if the connectionQueue is the current queue.
 	// 
-	// We do this to give the HTTPResponse classes the flexibility to call
+	// We do this to give the CHSHTTPResponse classes the flexibility to call
 	// this method whenever they want, even from within a readDataOfLength method.
 	
 	dispatch_async(connectionQueue, ^{ @autoreleasepool {
@@ -2666,13 +2666,13 @@ static NSMutableArray *recentNonces;
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation HTTPConfig
+@implementation CHSHTTPConfig
 
 @synthesize server;
 @synthesize documentRoot;
 @synthesize queue;
 
-- (id)initWithServer:(HTTPServer *)aServer documentRoot:(NSString *)aDocumentRoot
+- (id)initWithServer:(CHSHTTPServer *)aServer documentRoot:(NSString *)aDocumentRoot
 {
 	if ((self = [super init]))
 	{
@@ -2682,7 +2682,7 @@ static NSMutableArray *recentNonces;
 	return self;
 }
 
-- (id)initWithServer:(HTTPServer *)aServer documentRoot:(NSString *)aDocumentRoot queue:(dispatch_queue_t)q
+- (id)initWithServer:(CHSHTTPServer *)aServer documentRoot:(NSString *)aDocumentRoot queue:(dispatch_queue_t)q
 {
 	if ((self = [super init]))
 	{

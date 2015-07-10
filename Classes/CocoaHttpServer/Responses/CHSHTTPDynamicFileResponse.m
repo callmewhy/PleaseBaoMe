@@ -1,6 +1,6 @@
-#import "HTTPDynamicFileResponse.h"
-#import "HTTPConnection.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPDynamicFileResponse.h"
+#import "CHSHTTPConnection.h"
+#import "CHSHTTPLogging.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -9,10 +9,10 @@
 #define NULL_FD  -1
 
 
-@implementation HTTPDynamicFileResponse
+@implementation CHSHTTPDynamicFileResponse
 
 - (id)initWithFilePath:(NSString *)fpath
-         forConnection:(HTTPConnection *)parent
+         forConnection:(CHSHTTPConnection *)parent
              separator:(NSString *)separatorStr
  replacementDictionary:(NSDictionary *)dict
 {

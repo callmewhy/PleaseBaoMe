@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @class GCDAsyncSocket;
-@class WebSocket;
+@class CHSWebSocket;
 
 #if TARGET_OS_IPHONE
   #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000 // iPhone 4.0
@@ -18,7 +18,7 @@
 #endif
 
 
-@interface HTTPServer : NSObject IMPLEMENTED_PROTOCOLS
+@interface CHSHTTPServer : NSObject IMPLEMENTED_PROTOCOLS
 {
 	// Underlying asynchronous TCP/IP socket
 	dispatch_queue_t serverQueue;
@@ -65,8 +65,8 @@
 /**
  * The connection class is the class used to handle incoming HTTP connections.
  * 
- * The default value is [HTTPConnection class].
- * You can override HTTPConnection, and then set this to [MyHTTPConnection class].
+ * The default value is [CHSHTTPConnection class].
+ * You can override CHSHTTPConnection, and then set this to [MyHTTPConnection class].
  * 
  * If you change the connectionClass while the server is running,
  * the change will affect future incoming http connections.
@@ -193,7 +193,7 @@
 
 - (BOOL)isRunning;
 
-- (void)addWebSocket:(WebSocket *)ws;
+- (void)addWebSocket:(CHSWebSocket *)ws;
 
 - (NSUInteger)numberOfHTTPConnections;
 - (NSUInteger)numberOfWebSocketConnections;

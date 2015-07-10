@@ -2,10 +2,10 @@
 #import <Foundation/Foundation.h>
 
 //-----------------------------------------------------------------
-// interface MultipartMessageHeaderField
+// interface CHSMultipartMessageHeaderField
 //-----------------------------------------------------------------
 
-@interface MultipartMessageHeaderField : NSObject {
+@interface CHSMultipartMessageHeaderField : NSObject {
 	NSString*						name;
     NSString*						value;
     NSMutableDictionary*			params;

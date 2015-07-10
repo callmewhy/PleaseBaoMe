@@ -1,19 +1,19 @@
 #import <Foundation/Foundation.h>
-#import "HTTPResponse.h"
+#import "CHSHTTPResponse.h"
 
-@class HTTPConnection;
+@class CHSHTTPConnection;
 
 /**
- * This is an asynchronous version of HTTPFileResponse.
+ * This is an asynchronous version of CHSHTTPFileResponse.
  * It reads data from the given file asynchronously via GCD.
  * 
  * It may be overriden to allow custom post-processing of the data that has been read from the file.
- * An example of this is the HTTPDynamicFileResponse class.
+ * An example of this is the CHSHTTPDynamicFileResponse class.
 **/
 
-@interface HTTPAsyncFileResponse : NSObject <HTTPResponse>
+@interface CHSHTTPAsyncFileResponse : NSObject <CHSHTTPResponse>
 {	
-	HTTPConnection *connection;
+	CHSHTTPConnection *connection;
 	
 	NSString *filePath;
 	UInt64 fileLength;
@@ -34,7 +34,7 @@
 	BOOL readSourceSuspended;
 }
 
-- (id)initWithFilePath:(NSString *)filePath forConnection:(HTTPConnection *)connection;
+- (id)initWithFilePath:(NSString *)filePath forConnection:(CHSHTTPConnection *)connection;
 - (NSString *)filePath;
 
 @end

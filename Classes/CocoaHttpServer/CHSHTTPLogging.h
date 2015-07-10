@@ -65,14 +65,14 @@
 #define THIS_METHOD [NSString stringWithFormat:@"%s", __PRETTY_FUNCTION__]
 
 // Define logging primitives.
-#define HTTPLogError(frmt, ...)    NSLog(frmt, ##__VA_ARGS__)
+#define HTTPLogError(frmt, ...)    if (NO) { NSLog(frmt, ##__VA_ARGS__);}
 
-#define HTTPLogWarn(frmt, ...)     NSLog(frmt, ##__VA_ARGS__)
+#define HTTPLogWarn(frmt, ...)     if (NO) { NSLog(frmt, ##__VA_ARGS__);}
 
-#define HTTPLogInfo(frmt, ...)     NSLog(frmt, ##__VA_ARGS__)
+#define HTTPLogInfo(frmt, ...)     if (NO) { NSLog(frmt, ##__VA_ARGS__);}
 
-#define HTTPLogVerbose(frmt, ...)  NSLog(frmt, ##__VA_ARGS__)
+#define HTTPLogVerbose(frmt, ...)  if (NO) { NSLog(frmt, ##__VA_ARGS__);}
 
-#define HTTPLogTrace()             NSLog(@"%s", __func__)
+#define HTTPLogTrace()             if (NO) { }
 
-#define HTTPLogTrace2(frmt, ...)   NSLog(frmt, ##__VA_ARGS__)
+#define HTTPLogTrace2(frmt, ...)   if (NO) { NSLog(frmt, ##__VA_ARGS__);}

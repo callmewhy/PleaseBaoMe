@@ -1,16 +1,16 @@
 #import <Foundation/Foundation.h>
 
-@class HTTPMessage;
+@class CHSHTTPMessage;
 @class GCDAsyncSocket;
 
 
 #define WebSocketDidDieNotification  @"WebSocketDidDie"
 
-@interface WebSocket : NSObject
+@interface CHSWebSocket : NSObject
 {
 	dispatch_queue_t websocketQueue;
 	
-	HTTPMessage *request;
+	CHSHTTPMessage *request;
 	GCDAsyncSocket *asyncSocket;
 	
 	NSData *term;
@@ -22,20 +22,20 @@
 	id __unsafe_unretained delegate;
 }
 
-+ (BOOL)isWebSocketRequest:(HTTPMessage *)request;
++ (BOOL)isWebSocketRequest:(CHSHTTPMessage *)request;
 
-- (id)initWithRequest:(HTTPMessage *)request socket:(GCDAsyncSocket *)socket;
+- (id)initWithRequest:(CHSHTTPMessage *)request socket:(GCDAsyncSocket *)socket;
 
 /**
  * Delegate option.
  * 
- * In most cases it will be easier to subclass WebSocket,
+ * In most cases it will be easier to subclass CHSWebSocket,
  * but some circumstances may lead one to prefer standard delegate callbacks instead.
 **/
 @property (/* atomic */ unsafe_unretained) id delegate;
 
 /**
- * The WebSocket class is thread-safe, generally via it's GCD queue.
+ * The CHSWebSocket class is thread-safe, generally via it's GCD queue.
  * All public API methods are thread-safe,
  * and the subclass API methods are thread-safe as they are all invoked on the same GCD queue.
 **/
@@ -44,8 +44,8 @@
 /**
  * Public API
  * 
- * These methods are automatically called by the HTTPServer.
- * You may invoke the stop method yourself to close the WebSocket manually.
+ * These methods are automatically called by the CHSHTTPServer.
+ * You may invoke the stop method yourself to close the CHSWebSocket manually.
 **/
 - (void)start;
 - (void)stop;
@@ -53,7 +53,7 @@
 /**
  * Public API
  * 
- * Sends a message over the WebSocket.
+ * Sends a message over the CHSWebSocket.
  * This method is thread-safe.
 **/
 - (void)sendMessage:(NSString *)msg;
@@ -74,24 +74,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * There are two ways to create your own custom WebSocket:
+ * There are two ways to create your own custom CHSWebSocket:
  * 
  * - Subclass it and override the methods you're interested in.
  * - Use traditional delegate paradigm along with your own custom class.
  * 
  * They both exist to allow for maximum flexibility.
- * In most cases it will be easier to subclass WebSocket.
+ * In most cases it will be easier to subclass CHSWebSocket.
  * However some circumstances may lead one to prefer standard delegate callbacks instead.
- * One such example, you're already subclassing another class, so subclassing WebSocket isn't an option.
+ * One such example, you're already subclassing another class, so subclassing CHSWebSocket isn't an option.
 **/
 
 @protocol WebSocketDelegate
 @optional
 
-- (void)webSocketDidOpen:(WebSocket *)ws;
+- (void)webSocketDidOpen:(CHSWebSocket *)ws;
 
-- (void)webSocket:(WebSocket *)ws didReceiveMessage:(NSString *)msg;
+- (void)webSocket:(CHSWebSocket *)ws didReceiveMessage:(NSString *)msg;
 
-- (void)webSocketDidClose:(WebSocket *)ws;
+- (void)webSocketDidClose:(CHSWebSocket *)ws;
 
 @end

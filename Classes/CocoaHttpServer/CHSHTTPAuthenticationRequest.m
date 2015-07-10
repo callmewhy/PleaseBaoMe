@@ -1,19 +1,19 @@
-#import "HTTPAuthenticationRequest.h"
-#import "HTTPMessage.h"
+#import "CHSHTTPAuthenticationRequest.h"
+#import "CHSHTTPMessage.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-@interface HTTPAuthenticationRequest (PrivateAPI)
+@interface CHSHTTPAuthenticationRequest (PrivateAPI)
 - (NSString *)quotedSubHeaderFieldValue:(NSString *)param fromHeaderFieldValue:(NSString *)header;
 - (NSString *)nonquotedSubHeaderFieldValue:(NSString *)param fromHeaderFieldValue:(NSString *)header;
 @end
 
 
-@implementation HTTPAuthenticationRequest
+@implementation CHSHTTPAuthenticationRequest
 
-- (id)initWithRequest:(HTTPMessage *)request
+- (id)initWithRequest:(CHSHTTPMessage *)request
 {
 	if ((self = [super init]))
 	{

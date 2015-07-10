@@ -1,8 +1,8 @@
-#import "HTTPServer.h"
+#import "CHSHTTPServer.h"
 #import "GCDAsyncSocket.h"
-#import "HTTPConnection.h"
-#import "WebSocket.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPConnection.h"
+#import "CHSWebSocket.h"
+#import "CHSHTTPLogging.h"
 
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
@@ -33,7 +33,7 @@
 
 #endif
 
-@interface HTTPServer (PrivateAPI)
+@interface CHSHTTPServer (PrivateAPI)
 
 - (void)unpublishBonjour;
 - (void)publishBonjour;
@@ -47,7 +47,7 @@
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation HTTPServer
+@implementation CHSHTTPServer
 
 /**
  * Standard Constructor.
@@ -60,12 +60,12 @@
 		HTTPLogTrace();
 		
 		// Initialize underlying dispatch queue and GCD based tcp socket
-		serverQueue = dispatch_queue_create("HTTPServer", NULL);
+		serverQueue = dispatch_queue_create("CHSHTTPServer", NULL);
 		asyncSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:serverQueue];
 		
-		// Use default connection class of HTTPConnection
-		connectionQueue = dispatch_queue_create("HTTPConnection", NULL);
-		connectionClass = [HTTPConnection self];
+		// Use default connection class of CHSHTTPConnection
+		connectionQueue = dispatch_queue_create("CHSHTTPConnection", NULL);
+		connectionClass = [CHSHTTPConnection self];
 		
 		// By default bind on all available interfaces, en1, wifi etc
 		interface = nil;
@@ -178,8 +178,8 @@
 /**
  * The connection class is the class that will be used to handle connections.
  * That is, when a new connection is created, an instance of this class will be intialized.
- * The default connection class is HTTPConnection.
- * If you use a different connection class, it is assumed that the class extends HTTPConnection
+ * The default connection class is CHSHTTPConnection.
+ * If you use a different connection class, it is assumed that the class extends CHSHTTPConnection
 **/
 - (Class)connectionClass
 {
@@ -462,16 +462,16 @@
 		{
 			// Stop all HTTP connections the server owns
 			[connectionsLock lock];
-			for (HTTPConnection *connection in connections)
+			for (CHSHTTPConnection *connection in connections)
 			{
 				[connection stop];
 			}
 			[connections removeAllObjects];
 			[connectionsLock unlock];
 			
-			// Stop all WebSocket connections the server owns
+			// Stop all CHSWebSocket connections the server owns
 			[webSocketsLock lock];
-			for (WebSocket *webSocket in webSockets)
+			for (CHSWebSocket *webSocket in webSockets)
 			{
 				[webSocket stop];
 			}
@@ -492,7 +492,7 @@
 	return result;
 }
 
-- (void)addWebSocket:(WebSocket *)ws
+- (void)addWebSocket:(CHSWebSocket *)ws
 {
 	[webSocketsLock lock];
 	
@@ -538,11 +538,11 @@
 #pragma mark Incoming Connections
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (HTTPConfig *)config
+- (CHSHTTPConfig *)config
 {
 	// Override me if you want to provide a custom config to the new connection.
 	// 
-	// Generally this involves overriding the HTTPConfig class to include any custom settings,
+	// Generally this involves overriding the CHSHTTPConfig class to include any custom settings,
 	// and then having this method return an instance of 'MyHTTPConfig'.
 	
 	// Note: Think you can make the server faster by putting each connection on its own queue?
@@ -551,12 +551,12 @@
 	// Try the apache benchmark tool (already installed on your Mac):
 	// $  ab -n 1000 -c 1 http://localhost:<port>/some_path.html
 	
-	return [[HTTPConfig alloc] initWithServer:self documentRoot:documentRoot queue:connectionQueue];
+	return [[CHSHTTPConfig alloc] initWithServer:self documentRoot:documentRoot queue:connectionQueue];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-	HTTPConnection *newConnection = (HTTPConnection *)[[connectionClass alloc] initWithAsyncSocket:newSocket
+	CHSHTTPConnection *newConnection = (CHSHTTPConnection *)[[connectionClass alloc] initWithAsyncSocket:newSocket
 	                                                                                 configuration:[self config]];
 	[connectionsLock lock];
 	[connections addObject:newConnection];

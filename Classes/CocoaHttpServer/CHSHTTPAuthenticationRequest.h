@@ -5,10 +5,10 @@
   #import <CFNetwork/CFNetwork.h>
 #endif
 
-@class HTTPMessage;
+@class CHSHTTPMessage;
 
 
-@interface HTTPAuthenticationRequest : NSObject
+@interface CHSHTTPAuthenticationRequest : NSObject
 {
 	BOOL isBasic;
 	BOOL isDigest;
@@ -24,7 +24,7 @@
 	NSString *cnonce;
 	NSString *response;
 }
-- (id)initWithRequest:(HTTPMessage *)request;
+- (id)initWithRequest:(CHSHTTPMessage *)request;
 
 - (BOOL)isBasic;
 - (BOOL)isDigest;

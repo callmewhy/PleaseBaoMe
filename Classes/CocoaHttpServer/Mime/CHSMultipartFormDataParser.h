@@ -1,5 +1,5 @@
 
-#import "MultipartMessageHeader.h"
+#import "CHSMultipartMessageHeader.h"
 
 /* 
 Part one: http://tools.ietf.org/html/rfc2045 (Format of Internet Message Bodies)
@@ -13,29 +13,29 @@ Internet message format:  http://tools.ietf.org/html/rfc2822
 Multipart/form-data http://tools.ietf.org/html/rfc2388
 */
 
-@class MultipartFormDataParser;
+@class CHSMultipartFormDataParser;
 
 //-----------------------------------------------------------------
-// protocol MultipartFormDataParser
+// protocol CHSMultipartFormDataParser
 //-----------------------------------------------------------------
 
-@protocol MultipartFormDataParserDelegate <NSObject> 
+@protocol CHSMultipartFormDataParserDelegate <NSObject>
 @optional
-- (void) processContent:(NSData*) data WithHeader:(MultipartMessageHeader*) header;
-- (void) processEndOfPartWithHeader:(MultipartMessageHeader*) header;
+- (void) processContent:(NSData*) data WithHeader:(CHSMultipartMessageHeader *) header;
+- (void) processEndOfPartWithHeader:(CHSMultipartMessageHeader *) header;
 - (void) processPreambleData:(NSData*) data;
 - (void) processEpilogueData:(NSData*) data;
-- (void) processStartOfPartWithHeader:(MultipartMessageHeader*) header;
+- (void) processStartOfPartWithHeader:(CHSMultipartMessageHeader *) header;
 @end
 
 //-----------------------------------------------------------------
-// interface MultipartFormDataParser
+// interface CHSMultipartFormDataParser
 //-----------------------------------------------------------------
 
-@interface MultipartFormDataParser : NSObject {
+@interface CHSMultipartFormDataParser : NSObject {
 NSMutableData*						pendingData;
     NSData*							boundaryData;
-    MultipartMessageHeader*			currentHeader;
+    CHSMultipartMessageHeader *			currentHeader;
 
 	BOOL							waitingForCRLF;
 	BOOL							reachedEpilogue;
@@ -43,9 +43,9 @@ NSMutableData*						pendingData;
 	BOOL							checkForContentEnd;
 
 #if __has_feature(objc_arc_weak)
-	__weak id<MultipartFormDataParserDelegate>                  delegate;
+	__weak id<CHSMultipartFormDataParserDelegate>                  delegate;
 #else
-	__unsafe_unretained id<MultipartFormDataParserDelegate>     delegate;
+	__unsafe_unretained id<CHSMultipartFormDataParserDelegate>     delegate;
 #endif	
 	int									currentEncoding;
 	NSStringEncoding					formEncoding;

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "HTTPResponse.h"
-#import "HTTPAsyncFileResponse.h"
+#import "CHSHTTPResponse.h"
+#import "CHSHTTPAsyncFileResponse.h"
 
 /**
  * This class is designed to assist with dynamic content.
@@ -38,14 +38,14 @@
  * returns what you want when its description method is invoked.
 **/
 
-@interface HTTPDynamicFileResponse : HTTPAsyncFileResponse
+@interface CHSHTTPDynamicFileResponse : CHSHTTPAsyncFileResponse
 {
 	NSData *separator;
 	NSDictionary *replacementDict;
 }
 
 - (id)initWithFilePath:(NSString *)filePath
-         forConnection:(HTTPConnection *)connection
+         forConnection:(CHSHTTPConnection *)connection
              separator:(NSString *)separatorStr
  replacementDictionary:(NSDictionary *)dictionary;
 

@@ -10,7 +10,7 @@
 
 
 //-----------------------------------------------------------------
-// interface MultipartMessageHeader
+// interface CHSMultipartMessageHeader
 //-----------------------------------------------------------------
 enum {
     contentTransferEncoding_unknown,
@@ -21,7 +21,7 @@ enum {
     contentTransferEncoding_quotedPrintable,    
 };
 
-@interface MultipartMessageHeader : NSObject {
+@interface CHSMultipartMessageHeader : NSObject {
     NSMutableDictionary*                    fields;
     int                                     encoding;
     NSString*                               contentDispositionName;

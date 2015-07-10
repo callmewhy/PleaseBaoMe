@@ -1,6 +1,6 @@
-#import "HTTPFileResponse.h"
-#import "HTTPConnection.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPFileResponse.h"
+#import "CHSHTTPConnection.h"
+#import "CHSHTTPLogging.h"
 
 #import <unistd.h>
 #import <fcntl.h>
@@ -12,9 +12,9 @@
 #define NULL_FD  -1
 
 
-@implementation HTTPFileResponse
+@implementation CHSHTTPFileResponse
 
-- (id)initWithFilePath:(NSString *)fpath forConnection:(HTTPConnection *)parent
+- (id)initWithFilePath:(NSString *)fpath forConnection:(CHSHTTPConnection *)parent
 {
 	if((self = [super init]))
 	{

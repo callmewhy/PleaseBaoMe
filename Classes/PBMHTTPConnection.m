@@ -9,7 +9,7 @@
 
 
 #import <FMDB/FMDB.h>
-#import "HTTPDynamicFileResponse.h"
+#import "CHSHTTPDynamicFileResponse.h"
 #import "PBMHTTPConnection.h"
 #import "PBMHTMLBuilder.h"
 
@@ -18,7 +18,7 @@ static NSString *kDBPath;
 
 @implementation PBMHTTPConnection
 #pragma mark - HTTPConnection Override
-- (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path {
+- (NSObject<CHSHTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path {
     NSString *sqlStr = [[path lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     // handle normal request without spaces
@@ -53,7 +53,7 @@ static NSString *kDBPath;
     // close database
     [db close];
 
-    return [[HTTPDynamicFileResponse alloc] initWithFilePath:[self filePathForURI:@"/index.html"]
+    return [[CHSHTTPDynamicFileResponse alloc] initWithFilePath:[self filePathForURI:@"/index.html"]
                                                forConnection:self
                                                    separator:@"%%"
                                        replacementDictionary:@{ @"SQL_QUERY": sqlStr,

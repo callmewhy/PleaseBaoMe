@@ -1,26 +1,26 @@
 
-#import "MultipartMessageHeaderField.h"
-#import "HTTPLogging.h"
+#import "CHSMultipartMessageHeaderField.h"
+#import "CHSHTTPLogging.h"
 
 // helpers
 NSUInteger findChar(const char* str,NSUInteger length, char c);
 NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncoding encoding);
 
 //-----------------------------------------------------------------
-// interface MultipartMessageHeaderField (private)
+// interface CHSMultipartMessageHeaderField (private)
 //-----------------------------------------------------------------
 
 
-@interface MultipartMessageHeaderField (private)
+@interface CHSMultipartMessageHeaderField (private)
 -(BOOL) parseHeaderValueBytes:(char*) bytes length:(NSUInteger) length encoding:(NSStringEncoding) encoding;
 @end
 
 
 //-----------------------------------------------------------------
-// implementation MultipartMessageHeaderField
+// implementation CHSMultipartMessageHeaderField
 //-----------------------------------------------------------------
 
-@implementation MultipartMessageHeaderField
+@implementation CHSMultipartMessageHeaderField
 @synthesize name,value,params;
 
 - (id) initWithData:(NSData *)data contentEncoding:(NSStringEncoding)encoding {
@@ -32,7 +32,7 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 
 	NSUInteger separatorOffset = findChar(bytes, length, ':');
 	if( (-1 == separatorOffset) || (separatorOffset >= length-2) ) {
-		HTTPLogError(@"MultipartFormDataParser: Bad format.No colon in field header.");
+		HTTPLogError(@"CHSMultipartFormDataParser: Bad format.No colon in field header.");
 		// tear down
 		return nil;
 	}
@@ -40,7 +40,7 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 	// header name is always ascii encoded;
 	name = [[NSString alloc] initWithBytes: bytes length: separatorOffset encoding: NSASCIIStringEncoding];
 	if( nil == name ) {
-		HTTPLogError(@"MultipartFormDataParser: Bad MIME header name.");
+		HTTPLogError(@"CHSMultipartFormDataParser: Bad MIME header name.");
 		// tear down
 		return nil;		
 	}
@@ -55,7 +55,7 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 		value = [[NSString alloc] initWithBytes:bytes length: length encoding:encoding];
 
 		if( nil == value ) {
-			HTTPLogError(@"MultipartFormDataParser: Bad MIME header value for header name: '%@'",name);
+			HTTPLogError(@"CHSMultipartFormDataParser: Bad MIME header value for header name: '%@'",name);
 			// tear down
 			return nil;		
 		}
@@ -63,7 +63,7 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 	}
 	
 	value = [[NSString alloc] initWithBytes:bytes length: separatorOffset encoding:encoding];
-	HTTPLogVerbose(@"MultipartFormDataParser: Processing  header field '%@' : '%@'",name,value);
+	HTTPLogVerbose(@"CHSMultipartFormDataParser: Processing  header field '%@' : '%@'",name,value);
 	// skipe the separator and the next ' ' symbol
 	bytes += separatorOffset + 2;
 	length -= separatorOffset + 2;
@@ -71,8 +71,8 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 	// parse the "params" part of the header
 	if( ![self parseHeaderValueBytes:bytes length:length encoding:encoding] ) {
 		NSString* paramsStr = [[NSString alloc] initWithBytes:bytes length:length encoding:NSASCIIStringEncoding];
-		HTTPLogError(@"MultipartFormDataParser: Bad params for header with name '%@' and value '%@'",name,value);
-		HTTPLogError(@"MultipartFormDataParser: Params str: %@",paramsStr);
+		HTTPLogError(@"CHSMultipartFormDataParser: Bad params for header with name '%@' and value '%@'",name,value);
+		HTTPLogError(@"CHSMultipartFormDataParser: Params str: %@",paramsStr);
 
 		return nil;		
 	}
@@ -111,21 +111,21 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 		if( bytes[offset] == ';' ) {
 			if( !currentParam ) {
 				// found ; before stating '='.
-				HTTPLogError(@"MultipartFormDataParser: Unexpected ';' when parsing header");
+				HTTPLogError(@"CHSMultipartFormDataParser: Unexpected ';' when parsing header");
 				return NO;
 			}
 			NSString* paramValue = extractParamValue(bytes, offset,encoding);
 			 if( nil == paramValue ) {
-				HTTPLogWarn(@"MultipartFormDataParser: Failed to exctract paramValue for key %@ in header %@",currentParam,name);
+				HTTPLogWarn(@"CHSMultipartFormDataParser: Failed to exctract paramValue for key %@ in header %@",currentParam,name);
 			}
 			else {
 #ifdef DEBUG
 				if( [params objectForKey:currentParam] ) {
-					HTTPLogWarn(@"MultipartFormDataParser: param %@ mentioned more then once in header %@",currentParam,name);
+					HTTPLogWarn(@"CHSMultipartFormDataParser: param %@ mentioned more then once in header %@",currentParam,name);
 				}
 #endif
 				[params setObject:paramValue forKey:currentParam];
-				HTTPLogVerbose(@"MultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
 			}
 
 			currentParam = nil;
@@ -140,23 +140,23 @@ NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncodi
 
 	// add last param
 	if( insideQuote ) {
-		HTTPLogWarn(@"MultipartFormDataParser: unterminated quote in header %@",name);
+		HTTPLogWarn(@"CHSMultipartFormDataParser: unterminated quote in header %@",name);
 //		return YES;
 	}
 	if( currentParam ) {
 		NSString* paramValue = extractParamValue(bytes, length,encoding);
 
 		if( nil == paramValue ) {
-			HTTPLogError(@"MultipartFormDataParser: Failed to exctract paramValue for key %@ in header %@",currentParam,name);
+			HTTPLogError(@"CHSMultipartFormDataParser: Failed to exctract paramValue for key %@ in header %@",currentParam,name);
 		}
 
 #ifdef DEBUG
 		if( [params objectForKey:currentParam] ) {
-			HTTPLogWarn(@"MultipartFormDataParser: param %@ mentioned more then once in one header",currentParam);
+			HTTPLogWarn(@"CHSMultipartFormDataParser: param %@ mentioned more then once in one header",currentParam);
 		}
 #endif
 		[params setObject:paramValue forKey:currentParam];
-		HTTPLogVerbose(@"MultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
+		HTTPLogVerbose(@"CHSMultipartFormDataParser: header param: %@ = %@",currentParam,paramValue);
 		currentParam = nil;
 	}
 	

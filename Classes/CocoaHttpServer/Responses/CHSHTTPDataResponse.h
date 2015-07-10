@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "HTTPResponse.h"
+#import "CHSHTTPResponse.h"
 
 
-@interface HTTPDataResponse : NSObject <HTTPResponse>
+@interface CHSHTTPDataResponse : NSObject <CHSHTTPResponse>
 {
 	NSUInteger offset;
 	NSData *data;

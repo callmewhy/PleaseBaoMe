@@ -5,17 +5,17 @@
 //  Created by Валерий Гаврилов on 29.03.12.
 //  Copyright (c) 2012 LLC "Online Publishing Partners" (onlinepp.ru). All rights reserved.
 
-#import "MultipartMessageHeader.h"
-#import "MultipartMessageHeaderField.h"
+#import "CHSMultipartMessageHeader.h"
+#import "CHSMultipartMessageHeaderField.h"
 
-#import "HTTPLogging.h"
+#import "CHSHTTPLogging.h"
 
 //-----------------------------------------------------------------
-// implementation MultipartMessageHeader
+// implementation CHSMultipartMessageHeader
 //-----------------------------------------------------------------
 
 
-@implementation MultipartMessageHeader
+@implementation CHSMultipartMessageHeader
 @synthesize fields,encoding;
 
 
@@ -40,14 +40,14 @@
 		// the !isspace condition is to support header unfolding
 		if( (*(uint16_t*) (bytes+offset)  == fields_separator) && ((offset == length - 2) || !(isspace(bytes[offset+2])) )) {
 			NSData* fieldData = [NSData dataWithBytesNoCopy:bytes length:offset freeWhenDone:NO];
-			MultipartMessageHeaderField* field = [[MultipartMessageHeaderField alloc] initWithData: fieldData  contentEncoding:formEncoding];
+			CHSMultipartMessageHeaderField * field = [[CHSMultipartMessageHeaderField alloc] initWithData: fieldData  contentEncoding:formEncoding];
 			if( field ) {
 				[fields setObject:field forKey:field.name];
-				HTTPLogVerbose(@"MultipartFormDataParser: Processed Header field '%@'",field.name);
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: Processed Header field '%@'",field.name);
 			}
 			else {
 				NSString* fieldStr = [[NSString  alloc] initWithData:fieldData encoding:NSASCIIStringEncoding];
-				HTTPLogWarn(@"MultipartFormDataParser: Failed to parse MIME header field. Input ASCII string:%@",fieldStr);
+				HTTPLogWarn(@"CHSMultipartFormDataParser: Failed to parse MIME header field. Input ASCII string:%@",fieldStr);
 			}
 
 			// move to the next header field

@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "HTTPResponse.h"
+#import "CHSHTTPResponse.h"
 
 
-@interface HTTPRedirectResponse : NSObject <HTTPResponse>
+@interface CHSHTTPRedirectResponse : NSObject <CHSHTTPResponse>
 {
 	NSString *redirectPath;
 }

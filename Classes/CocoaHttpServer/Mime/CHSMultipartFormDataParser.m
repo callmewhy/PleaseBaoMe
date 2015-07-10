@@ -1,14 +1,14 @@
 
-#import "MultipartFormDataParser.h"
+#import "CHSMultipartFormDataParser.h"
 #import "DDData.h"
-#import "HTTPLogging.h"
+#import "CHSHTTPLogging.h"
 
 //-----------------------------------------------------------------
-// interface MultipartFormDataParser (private)
+// interface CHSMultipartFormDataParser (private)
 //-----------------------------------------------------------------
 
 
-@interface MultipartFormDataParser (private)
+@interface CHSMultipartFormDataParser (private)
 + (NSData*) decodedDataFromData:(NSData*) data encoding:(NSInteger) encoding;
 
 - (NSInteger) findHeaderEnd:(NSData*) workingData fromOffset:(NSInteger) offset;
@@ -23,11 +23,11 @@
 
 
 //-----------------------------------------------------------------
-// implementation MultipartFormDataParser
+// implementation CHSMultipartFormDataParser
 //-----------------------------------------------------------------
 
 
-@implementation MultipartFormDataParser 
+@implementation CHSMultipartFormDataParser
 @synthesize delegate,formEncoding;
 
 - (id) initWithBoundary:(NSString*) boundary formEncoding:(NSStringEncoding) _formEncoding {
@@ -35,7 +35,7 @@
         return self;
     }
 	if( nil == boundary ) {
-		HTTPLogWarn(@"MultipartFormDataParser: init with zero boundary");
+		HTTPLogWarn(@"CHSMultipartFormDataParser: init with zero boundary");
 		return nil;
 	}
     boundaryData = [[@"\r\n--" stringByAppendingString:boundary] dataUsingEncoding:NSASCIIStringEncoding];
@@ -55,7 +55,7 @@
 - (BOOL) appendData:(NSData *)data { 
     // Can't parse without boundary;
     if( nil == boundaryData ) {
-		HTTPLogError(@"MultipartFormDataParser: Trying to parse multipart without specifying a valid boundary");
+		HTTPLogError(@"CHSMultipartFormDataParser: Trying to parse multipart without specifying a valid boundary");
 		assert(false);
         return NO;
     }
@@ -86,7 +86,7 @@
 			if(	pendingData.length >= 2 ) {
 				if( *(uint16_t*)(pendingData.bytes + offset) == 0x2D2D ) {
 					// we found the multipart end. all coming next is an epilogue.
-					HTTPLogVerbose(@"MultipartFormDataParser: End of multipart message");
+					HTTPLogVerbose(@"CHSMultipartFormDataParser: End of multipart message");
 					waitingForCRLF = YES;
 					reachedEpilogue = YES;
 					offset+= 2;
@@ -112,7 +112,7 @@
 				char* bytes = (char*) workingData.bytes;
 				if( *(uint16_t*)(bytes + offset) == 0x2D2D ) {
 					// we found the multipart end. all coming next is an epilogue.
-					HTTPLogVerbose(@"MultipartFormDataParser: End of multipart message");
+					HTTPLogVerbose(@"CHSMultipartFormDataParser: End of multipart message");
 					checkForContentEnd = NO;
 					reachedEpilogue = YES;
 					// still wait for CRLF, that comes after boundary, but before epilogue.
@@ -204,18 +204,18 @@
 
 				// let the header parser do it's job from now on.
 				NSData * headerData = [NSData dataWithBytesNoCopy: (char*) workingData.bytes + offset length:headerEnd + 2 - offset freeWhenDone:NO];
-				currentHeader = [[MultipartMessageHeader alloc] initWithData:headerData formEncoding:formEncoding];
+				currentHeader = [[CHSMultipartMessageHeader alloc] initWithData:headerData formEncoding:formEncoding];
 
 				if( nil == currentHeader ) {
 					// we've found the data is in wrong format.
-					HTTPLogError(@"MultipartFormDataParser: MultipartFormDataParser: wrong input format, coulnd't get a valid header");
+					HTTPLogError(@"CHSMultipartFormDataParser: CHSMultipartFormDataParser: wrong input format, coulnd't get a valid header");
 					return NO;
 				}
                 if( [delegate respondsToSelector:@selector(processStartOfPartWithHeader:)] ) {
                     [delegate processStartOfPartWithHeader:currentHeader];
                 }
 
-				HTTPLogVerbose(@"MultipartFormDataParser: MultipartFormDataParser: Retrieved part header.");
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: CHSMultipartFormDataParser: Retrieved part header.");
 			}
 			// skip the two trailing \r\n, in addition to the whole header.
 			offset = headerEnd + 4;	
@@ -243,10 +243,10 @@
 				return YES;
 			}
 			// decode the chunk and let the delegate use it (store in a file, for example)
-			NSData* decodedData = [MultipartFormDataParser decodedDataFromData:[NSData dataWithBytesNoCopy:(char*)workingData.bytes + offset length:workingData.length - offset - sizeToLeavePending freeWhenDone:NO] encoding:currentEncoding];
+			NSData* decodedData = [CHSMultipartFormDataParser decodedDataFromData:[NSData dataWithBytesNoCopy:(char *) workingData.bytes + offset length:workingData.length - offset - sizeToLeavePending freeWhenDone:NO] encoding:currentEncoding];
 			
 			if( [delegate respondsToSelector:@selector(processContent:WithHeader:)] ) {
-				HTTPLogVerbose(@"MultipartFormDataParser: Processed %zd bytes of body",sizeToPass);
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: Processed %zd bytes of body",sizeToPass);
 
 				[delegate processContent: decodedData WithHeader:currentHeader];
 			}
@@ -265,7 +265,7 @@
 
 			if( [delegate respondsToSelector:@selector(processEndOfPartWithHeader:)] ){
 				[delegate processEndOfPartWithHeader:currentHeader];
-				HTTPLogVerbose(@"MultipartFormDataParser: End of body part");
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: End of body part");
 			}
 			currentHeader = nil;
 
@@ -294,10 +294,10 @@
 		// in debug, we might also want to know, if the file is somehow misformatted.
 #ifdef DEBUG
 		if( !isspace(*(bytes+offset)) ) {
-			HTTPLogWarn(@"MultipartFormDataParser: Warning, non-whitespace character '%c' between boundary bytes and CRLF in boundary line",*(bytes+offset) );
+			HTTPLogWarn(@"CHSMultipartFormDataParser: Warning, non-whitespace character '%c' between boundary bytes and CRLF in boundary line",*(bytes+offset) );
 		}
 		if( !isspace(*(bytes+offset+1)) ) {
-			HTTPLogWarn(@"MultipartFormDataParser: Warning, non-whitespace character '%c' between boundary bytes and CRLF in boundary line",*(bytes+offset+1) );
+			HTTPLogWarn(@"CHSMultipartFormDataParser: Warning, non-whitespace character '%c' between boundary bytes and CRLF in boundary line",*(bytes+offset+1) );
 		}
 #endif
 		offset++;
@@ -340,7 +340,7 @@
 			if( [delegate respondsToSelector:@selector(processPreambleData:)] ) {
 				NSData* preambleData = [NSData dataWithBytesNoCopy: (char*) data.bytes length: data.length - offset - boundaryLength freeWhenDone:NO];
 				[delegate processPreambleData:preambleData];
-				HTTPLogVerbose(@"MultipartFormDataParser: processed preamble");
+				HTTPLogVerbose(@"CHSMultipartFormDataParser: processed preamble");
 			}
 			pendingData = [NSMutableData dataWithBytes: data.bytes + data.length - boundaryLength length:boundaryLength];
 		}
@@ -474,7 +474,7 @@
 			count = 0;
 
 			if( length < 3 ) {
-				HTTPLogWarn(@"MultipartFormDataParser: warning, trailing '=' in quoted printable data");
+				HTTPLogWarn(@"CHSMultipartFormDataParser: warning, trailing '=' in quoted printable data");
 			}
 			// soft newline
 			if( bytes[0] == '\r' ) {
@@ -500,7 +500,7 @@
 
 #ifdef DEBUG
 		if( (unsigned char) bytes[count] > 126 ) {
-			HTTPLogWarn(@"MultipartFormDataParser: Warning, character with code above 126 appears in quoted printable encoded data");
+			HTTPLogWarn(@"CHSMultipartFormDataParser: Warning, character with code above 126 appears in quoted printable encoded data");
 		}
 #endif
 		
