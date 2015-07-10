@@ -2,12 +2,6 @@
 #import "MultipartMessageHeaderField.h"
 #import "HTTPLogging.h"
 
-//-----------------------------------------------------------------
-#pragma mark log level
-
-static const int ddLogLevel = DDLogLevelWarning;
-
-
 // helpers
 NSUInteger findChar(const char* str,NSUInteger length, char c);
 NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncoding encoding);

@@ -3,5 +3,4 @@
 
 target 'PleaseBaoMe' do
   pod 'FMDB'
-  pod 'CocoaLumberjack'
 end

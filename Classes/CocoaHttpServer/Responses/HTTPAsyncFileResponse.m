@@ -35,10 +35,6 @@
 
 #endif
 
-// Log levels : off, error, warn, info, verbose
-// Other flags: trace
-static const int ddLogLevel = DDLogLevelWarning;
-
 #define NULL_FD  -1
 
 /**

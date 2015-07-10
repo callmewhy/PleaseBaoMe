@@ -41,10 +41,6 @@
 
 #endif
 
-// Log levels: off, error, warn, info, verbose
-// Other flags: trace
-static const int ddLogLevel = DDLogLevelWarning; // | HTTP_LOG_FLAG_TRACE;
-
 // Define chunk size used to read in data for responses
 // This is how much data will be read from disk into RAM at a time
 #if TARGET_OS_IPHONE

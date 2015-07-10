@@ -33,10 +33,6 @@
 
 #endif
 
-// Log levels: off, error, warn, info, verbose
-// Other flags: trace
-static const int ddLogLevel = DDLogLevelInfo; // | HTTP_LOG_FLAG_TRACE;
-
 @interface HTTPServer (PrivateAPI)
 
 - (void)unpublishBonjour;

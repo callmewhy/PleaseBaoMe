@@ -11,11 +11,6 @@
 #import "HTTPLogging.h"
 
 //-----------------------------------------------------------------
-#pragma mark log level
-
-static const int ddLogLevel = DDLogLevelWarning;
-
-//-----------------------------------------------------------------
 // implementation MultipartMessageHeader
 //-----------------------------------------------------------------
 

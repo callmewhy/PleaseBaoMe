@@ -46,8 +46,6 @@
  * This means you can pass it multiple variables just like NSLog.
 **/
 
-#import "CocoaLumberjack.h"
-
 // Configure log levels.
 #define HTTP_LOG_LEVEL_OFF     0                                              // 0...00000
 #define HTTP_LOG_LEVEL_ERROR   (HTTP_LOG_LEVEL_OFF   | HTTP_LOG_FLAG_ERROR)   // 0...00001
@@ -63,16 +61,18 @@
 
 #define HTTP_LOG_FLAG_TRACE   (1 << 4) // 0...10000
 
+#define THIS_FILE [NSString stringWithFormat:@"%s", __PRETTY_FUNCTION__]
+#define THIS_METHOD [NSString stringWithFormat:@"%s", __PRETTY_FUNCTION__]
 
 // Define logging primitives.
-#define HTTPLogError(frmt, ...)    DDLogError(frmt, ##__VA_ARGS__)
+#define HTTPLogError(frmt, ...)    NSLog(frmt, ##__VA_ARGS__)
 
-#define HTTPLogWarn(frmt, ...)     DDLogWarn(frmt, ##__VA_ARGS__)
+#define HTTPLogWarn(frmt, ...)     NSLog(frmt, ##__VA_ARGS__)
 
-#define HTTPLogInfo(frmt, ...)     DDLogWarn(frmt, ##__VA_ARGS__)
+#define HTTPLogInfo(frmt, ...)     NSLog(frmt, ##__VA_ARGS__)
 
-#define HTTPLogVerbose(frmt, ...)  DDLogWarn(frmt, ##__VA_ARGS__)
+#define HTTPLogVerbose(frmt, ...)  NSLog(frmt, ##__VA_ARGS__)
 
-#define HTTPLogTrace()             DDLogWarn(@"%@[%p]: %@", THIS_FILE, self, THIS_METHOD)
+#define HTTPLogTrace()             NSLog(@"%s", __func__)
 
-#define HTTPLogTrace2(frmt, ...)   DDLogWarn(frmt, ##__VA_ARGS__)
+#define HTTPLogTrace2(frmt, ...)   NSLog(frmt, ##__VA_ARGS__)

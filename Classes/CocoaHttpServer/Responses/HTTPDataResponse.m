@@ -5,11 +5,6 @@
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-// Log levels : off, error, warn, info, verbose
-// Other flags: trace
-static const int ddLogLevel = DDLogLevelOff; // | HTTP_LOG_FLAG_TRACE;
-
-
 @implementation HTTPDataResponse
 
 - (id)initWithData:(NSData *)dataParam

@@ -34,10 +34,6 @@
 
 #endif
 
-// Log levels: off, error, warn, info, verbose
-// Other flags : trace
-static const int ddLogLevel = DDLogLevelWarning; // | HTTP_LOG_FLAG_TRACE;
-
 #define TIMEOUT_NONE          -1
 #define TIMEOUT_REQUEST_BODY  10
 
