@@ -10,6 +10,7 @@
 #import "PBMDemoTool.h"
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 
 @end
 
@@ -18,6 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [PBMDemoTool setupDemoData];
+    _tipLabel.text = [PBMTool URL];
 }
 
 @end

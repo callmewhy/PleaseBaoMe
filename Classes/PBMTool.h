@@ -14,4 +14,6 @@
 +(void)start;
 
 +(void)setDBFilePath:(NSString*)path;
+
++(NSString*)URL;
 @end

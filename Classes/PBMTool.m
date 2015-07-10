@@ -18,6 +18,29 @@
 
 @implementation PBMTool
 
++ (PBMTool *)sharedInstance {
+    static PBMTool *sharedPBMTool = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        @synchronized(self){
+            sharedPBMTool = [[self alloc] init];
+        }
+    });
+    return sharedPBMTool;
+}
+
++(void)start {
+    [[self sharedInstance] start];
+}
+
++(void)setDBFilePath:(NSString*)path {
+    [PBMHTTPConnection setDBFilePath:path];
+}
+
++(NSString*)URL {
+    return [NSString stringWithFormat:@"%@:%hu", [PBMIPTool IPAddress], [[PBMTool sharedInstance].httpServer listeningPort]];
+}
+
 -(void)start {
     if (_httpServer) {
         return;
@@ -31,30 +54,11 @@
     
     NSError *error;
     if([_httpServer start:&error]) {
-        NSLog(@"You can see you SQLite in %@:%hu", [PBMIPTool IPAddress], [_httpServer listeningPort]);
+        NSLog(@"You can see you SQLite in %@", [PBMTool URL]);
     } else {
         NSLog(@"Error starting HTTP Server: %@", error);
     }
     
-}
-
-+(void)start {
-    [[self sharedInstance] start];
-}
-
-+ (PBMTool *)sharedInstance {
-    static PBMTool *sharedPBMTool = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        @synchronized(self){
-            sharedPBMTool = [[self alloc] init];
-        }
-    });
-    return sharedPBMTool;
-}
-
-+(void)setDBFilePath:(NSString*)path {
-    [PBMHTTPConnection setDBFilePath:path];
 }
 
 @end

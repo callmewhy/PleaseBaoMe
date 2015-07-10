@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PBMTool.h"
 
 @interface PBMDemoTool : NSObject
 
