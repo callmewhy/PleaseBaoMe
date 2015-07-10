@@ -30,7 +30,7 @@ Podfile:
 
 ### Copying all the files
 
-All needed files are in  "Classes" folder. And all dependencies are in "Vendor" folder. You can copy them into your project to import PleaseBaoMe.
+All needed files are in  "Classes" folder. And all dependencies are in "FMDB" folder. You can copy them into your project to import PleaseBaoMe.
 
 ## How To Use
 
