@@ -19,7 +19,6 @@ Pod::Spec.new do |s|
   s.source_files  = "Classes/*.{h,m}"
   # ――― Dependency ―――――――――――――――――――――――――――-――――――――――――――――――――――――――――――――――― #
   s.dependencies = {
-    'CocoaHTTPServer' => '~> 2', 
     'FMDB' => '~> 2'
   }
   # ――― Dependency ―――――――――――――――――――――――――――-――――――――――――――――――――――――――――――――――― #
