@@ -1,6 +1,6 @@
 # PleaseBaoMe
 
-A useful tool to view SQLite file in Web browser during app running￼procedure.
+A useful tool to view SQLite file in Web browser during app running procedure.
 
 ![](http://ww1.sinaimg.cn/large/61d238c7gw1etx1ugxqphj20sd0fdtd4.jpg)
 
