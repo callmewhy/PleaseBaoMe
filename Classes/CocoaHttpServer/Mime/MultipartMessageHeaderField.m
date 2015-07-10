@@ -5,11 +5,7 @@
 //-----------------------------------------------------------------
 #pragma mark log level
 
-#ifdef DEBUG
-static const int httpLogLevel = HTTP_LOG_LEVEL_WARN;
-#else
-static const int httpLogLevel = HTTP_LOG_LEVEL_WARN;
-#endif
+static const int ddLogLevel = DDLogLevelWarning;
 
 
 // helpers

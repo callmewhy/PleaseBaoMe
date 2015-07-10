@@ -46,7 +46,7 @@
 // https://github.com/robbiehanson/CocoaLumberjack
 // 
 // It allows us to do a lot of logging without significantly slowing down the code.
-#import "DDLog.h"
+#import "CocoaLumberjack.h"
 
 #define LogAsync   YES
 #define LogContext GCDAsyncSocketLoggingContext
