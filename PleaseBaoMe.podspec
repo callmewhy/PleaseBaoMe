@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source = { :git => "https://github.com/callmewhy/PleaseBaoMe.git", :tag => "0.1" }
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "Classes/*.{h,m}"
+  s.source_files  = "Classes/**/*.{h,m}"
   # ――― Dependency ―――――――――――――――――――――――――――-――――――――――――――――――――――――――――――――――― #
   s.dependencies = {
     'FMDB' => '~> 2'
