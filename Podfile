@@ -2,11 +2,6 @@
 # platform :ios, '6.0'
 
 target 'PleaseBaoMe' do
-pod 'CocoaHTTPServer'
-pod 'FMDB'
+  pod 'FMDB'
+  pod 'CocoaLumberjack'
 end
-
-target 'PleaseBaoMeTests' do
-
-end
-
