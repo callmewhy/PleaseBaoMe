@@ -13,8 +13,8 @@ static const int httpLogLevel = HTTP_LOG_LEVEL_WARN;
 
 
 // helpers
-int findChar(const char* str,int length, char c);
-NSString* extractParamValue(const char* bytes, int length, NSStringEncoding encoding);
+NSUInteger findChar(const char* str,NSUInteger length, char c);
+NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncoding encoding);
 
 //-----------------------------------------------------------------
 // interface MultipartMessageHeaderField (private)
@@ -22,7 +22,7 @@ NSString* extractParamValue(const char* bytes, int length, NSStringEncoding enco
 
 
 @interface MultipartMessageHeaderField (private)
--(BOOL) parseHeaderValueBytes:(char*) bytes length:(int) length encoding:(NSStringEncoding) encoding;
+-(BOOL) parseHeaderValueBytes:(char*) bytes length:(NSUInteger) length encoding:(NSStringEncoding) encoding;
 @end
 
 
@@ -38,9 +38,9 @@ NSString* extractParamValue(const char* bytes, int length, NSStringEncoding enco
 	params = [[NSMutableDictionary alloc] initWithCapacity:1];
 
 	char* bytes = (char*)data.bytes;
-	int length = data.length;
+	NSUInteger length = data.length;
 
-	int separatorOffset = findChar(bytes, length, ':');
+	NSUInteger separatorOffset = findChar(bytes, length, ':');
 	if( (-1 == separatorOffset) || (separatorOffset >= length-2) ) {
 		HTTPLogError(@"MultipartFormDataParser: Bad format.No colon in field header.");
 		// tear down
@@ -90,7 +90,7 @@ NSString* extractParamValue(const char* bytes, int length, NSStringEncoding enco
 }
 
 
--(BOOL) parseHeaderValueBytes:(char*) bytes length:(int) length encoding:(NSStringEncoding) encoding {
+-(BOOL) parseHeaderValueBytes:(char*) bytes length:(NSUInteger) length encoding:(NSStringEncoding) encoding {
 	int offset = 0;
 	NSString* currentParam = nil;
 	BOOL insideQuote = NO;
@@ -182,7 +182,7 @@ NSString* extractParamValue(const char* bytes, int length, NSStringEncoding enco
 @end
 
 
-int findChar(const char* str,int length, char c) {
+NSUInteger findChar(const char* str,NSUInteger length, char c) {
 	int offset = 0;
 	while( offset < length ) {
 		if( str[offset] == c )
@@ -193,7 +193,7 @@ int findChar(const char* str,int length, char c) {
 }
 
 
-NSString* extractParamValue(const char* bytes, int length, NSStringEncoding encoding) {
+NSString* extractParamValue(const char* bytes, NSUInteger length, NSStringEncoding encoding) {
 	if( !length ) 
 		return nil;
 	NSMutableString* value = nil;

@@ -39,8 +39,8 @@ static const int httpLogLevel = HTTP_LOG_LEVEL_WARN;
 	encoding = contentTransferEncoding_unknown;
 
 	char* bytes = (char*)data.bytes;
-	int length = data.length;
-	int offset = 0;
+	NSInteger length = data.length;
+	NSInteger offset = 0;
 
 	// split header into header fields, separated by \r\n
 	uint16_t fields_separator = 0x0A0D; // \r\n
