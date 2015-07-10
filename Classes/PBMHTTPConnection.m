@@ -21,7 +21,7 @@ static NSString *kDBPath;
     NSString *sqlStr = [[path lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
     // handle normal request without spaces
-    if ([sqlStr componentsSeparatedByString:@" "].count == 1) {
+    if ([sqlStr componentsSeparatedByString:@" "].count == 1 && sqlStr.length > 1) {
         return [super httpResponseForMethod:method URI:path];
     }
     
