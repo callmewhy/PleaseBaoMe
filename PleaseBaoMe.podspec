@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.platform = :ios, "7.0"
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source = { :git => "https://github.com/callmewhy/PleaseBaoMe.git", :tag => "0.1" }
+  s.source = { :git => "https://github.com/callmewhy/PleaseBaoMe.git"}
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "Classes/**/*.{h,m}"
   # ――― Dependency ―――――――――――――――――――――――――――-――――――――――――――――――――――――――――――――――― #
