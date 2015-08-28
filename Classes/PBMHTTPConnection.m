@@ -26,6 +26,12 @@ static NSString *kDBPath;
         return [super httpResponseForMethod:method URI:path];
     }
     
+    // if database file not exist
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kDBPath]) {
+        NSLog(@"DB Error: DB file not exist!");
+        return nil;
+    }
+    
     // open database
     FMDatabase *db = [FMDatabase databaseWithPath:kDBPath];
     if (![db open]) {
