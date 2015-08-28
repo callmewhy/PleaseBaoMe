@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8CD98921C4C102CFD5E7E3E1 /* libPods-PleaseBaoMe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A06324C093FC5FEA5C7A33D0 /* libPods-PleaseBaoMe.a */; };
+		3527E18616E933B861BDD572 /* libPods-PleaseBaoMe.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A06324C093FC5FEA5C7A33D0 /* libPods-PleaseBaoMe.a */; };
 		9601E9EE1B4BBE8D003F6834 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9601E9ED1B4BBE8D003F6834 /* main.m */; };
 		9601E9F11B4BBE8D003F6834 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9601E9F01B4BBE8D003F6834 /* AppDelegate.m */; };
 		9601E9F41B4BBE8D003F6834 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9601E9F31B4BBE8D003F6834 /* ViewController.m */; };
@@ -110,7 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CD98921C4C102CFD5E7E3E1 /* libPods-PleaseBaoMe.a in Frameworks */,
+				3527E18616E933B861BDD572 /* libPods-PleaseBaoMe.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,11 +290,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9601EA0B1B4BBE8D003F6834 /* Build configuration list for PBXNativeTarget "PleaseBaoMe" */;
 			buildPhases = (
-				D778514F2343020ADA554A8B /* Check Pods Manifest.lock */,
+				7AF7AA81FC48A929109EA32C /* Check Pods Manifest.lock */,
 				9601E9E41B4BBE8D003F6834 /* Sources */,
 				9601E9E51B4BBE8D003F6834 /* Frameworks */,
 				9601E9E61B4BBE8D003F6834 /* Resources */,
-				744F4F9B3BB175053198F669 /* Copy Pods Resources */,
+				FE3FB64A102A23FD1B8BC693 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -352,22 +352,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		744F4F9B3BB175053198F669 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PleaseBaoMe/Pods-PleaseBaoMe-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D778514F2343020ADA554A8B /* Check Pods Manifest.lock */ = {
+		7AF7AA81FC48A929109EA32C /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -380,6 +365,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FE3FB64A102A23FD1B8BC693 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PleaseBaoMe/Pods-PleaseBaoMe-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
